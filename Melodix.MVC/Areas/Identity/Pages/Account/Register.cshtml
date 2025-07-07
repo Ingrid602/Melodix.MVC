@@ -1,0 +1,166 @@
+﻿@page
+@model RegisterModel
+
+@{
+    ViewData["Title"] = "Registrarse";
+}
+
+<style>
+    body {
+        background-color: #121212;
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .register-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 15px;
+    }
+
+    .register-box {
+        background-color: #000;
+        padding: 40px;
+        border-radius: 12px;
+        width: 420px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    h2 {
+        margin-bottom: 25px;
+        font-weight: normal;
+        text-align: center;
+    }
+
+    .form-floating {
+        margin-bottom: 15px;
+    }
+
+    input.form-control {
+        background-color: #121212;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        padding: 12px 15px;
+        font-size: 16px;
+    }
+
+        input.form-control::placeholder {
+            color: #b3b3b3;
+        }
+
+    label {
+        color: #b3b3b3;
+        font-size: 14px;
+    }
+
+    .btn-spotify {
+        background-color: #1db954;
+        color: white;
+        font-weight: bold;
+        padding: 12px;
+        border: none;
+        border-radius: 25px;
+        width: 100%;
+        font-size: 16px;
+        margin-top: 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-spotify:hover {
+            background-color: #1ed760;
+        }
+
+    .text-danger {
+        color: #ff4c4c;
+        font-size: 13px;
+        margin-top: -10px;
+        margin-bottom: 10px;
+    }
+
+    .external-login {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+        .external-login button {
+            background-color: #1db954;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            padding: 8px 20px;
+            margin: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .external-login button:hover {
+                background-color: #1ed760;
+            }
+
+    .redirect-link {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+        .redirect-link a {
+            color: #1db954;
+            text-decoration: underline;
+        }
+</style>
+
+<div class="register-container">
+    <div class="register-box">
+        <h2>@ViewData["Title"]</h2>
+
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+
+            <div class="form-floating">
+                <input asp-for="Input.Email" class="form-control" placeholder="Email" />
+                <label asp-for="Input.Email">Email</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating">
+                <input asp-for="Input.Password" class="form-control" placeholder="Contraseña" />
+                <label asp-for="Input.Password">Contraseña</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating">
+                <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" />
+                <label asp-for="Input.ConfirmPassword">Confirmar Contraseña</label>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn-spotify">Registrarse</button>
+        </form>
+
+        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+        {
+            <div class="external-login">
+                <hr />
+                <p>O regístrate usando:</p>
+                @foreach (var provider in Model.ExternalLogins)
+                {
+                    <form method="post" asp-page="./ExternalLogin" asp-route-provider="@provider.Name" asp-route-returnUrl="@Model.ReturnUrl" style="display:inline;">
+                        <button type="submit">@provider.DisplayName</button>
+                    </form>
+                }
+            </div>
+        }
+
+        <div class="redirect-link">
+            <p>¿Ya tienes cuenta? <a asp-page="./Login">Iniciar sesión</a></p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
