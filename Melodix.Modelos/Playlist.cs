@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class Playlist
     {
@@ -13,11 +13,11 @@ namespace Melodix.MVC.Models
         public DateTime FechaCreacion { get; set; }
         public bool EsPrivada { get; set; }
 
-        public ApplicationUser Usuario { get; set; }
+        public ApplicationUser? Usuario { get; set; }
 
-        public List<PlaylistCancion> PlaylistCanciones { get; set; } = new();
+        public List<PlaylistCancion>? PlaylistCanciones { get; set; } 
 
         // Usuarios que guardaron esta playlist (muchos a muchos simplificado)
-        public List<ApplicationUser> UsuariosQueLaGuardaron { get; set; } = new();
+        public List<ApplicationUser>? UsuariosQueLaGuardaron { get; set; } 
     }
 }

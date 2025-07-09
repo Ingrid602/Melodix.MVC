@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class PlaylistCancion
     {
@@ -14,7 +14,7 @@ namespace Melodix.MVC.Models
 
         public int Orden { get; set; }
 
-        public Playlist Playlist { get; set; }
-        public Cancion Cancion { get; set; }
+        public Playlist? Playlist { get; set; }
+        public Cancion? Cancion { get; set; }
     }
 }

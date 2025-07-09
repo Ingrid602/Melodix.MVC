@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class SeguidoresArtistas
     {
@@ -11,7 +11,7 @@ namespace Melodix.MVC.Models
         public int ArtistaId { get; set; }
         public DateTime Fecha { get; set; }
 
-        public ApplicationUser Usuario { get; set; }
-        public Artista Artista { get; set; }
+        public ApplicationUser? Usuario { get; set; }
+        public Artista? Artista { get; set; }
     }
 }

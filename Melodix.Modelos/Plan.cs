@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class Plan
     {
@@ -9,7 +9,7 @@ namespace Melodix.MVC.Models
         public string Nombre { get; set; }
         public decimal PrecioMensual { get; set; }
 
-        public List<Suscripcion> Suscripciones { get; set; } = new();
-        public List<Factura> Facturas { get; set; } = new();
+        public List<Suscripcion>? Suscripciones { get; set; } 
+        public List<Factura>? Facturas { get; set; } 
     }
 }

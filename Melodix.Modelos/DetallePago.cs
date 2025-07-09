@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class DetallePago
     {
@@ -16,7 +16,7 @@ namespace Melodix.MVC.Models
         public string CodigoSeguridad { get; set; }
         public string Estado { get; set; }
 
-        public Factura Factura { get; set; }
-        public MetodoPago MetodoPago { get; set; }
+        public Factura? Factura { get; set; }
+        public MetodoPago? MetodoPago { get; set; }
     }
 }

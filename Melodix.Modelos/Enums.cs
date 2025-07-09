@@ -1,4 +1,4 @@
-﻿namespace Melodix.MVC.Models
+﻿namespace Melodix.Modelos
 {
     // Enums
     public enum RolUsuario

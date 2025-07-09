@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class Suscripcion
     {
@@ -14,9 +14,9 @@ namespace Melodix.MVC.Models
         public DateTime FechaFin { get; set; }
         public bool Activo { get; set; }
 
-        public ApplicationUser Usuario { get; set; }
-        public Plan Plan { get; set; }
+        public ApplicationUser? Usuario { get; set; }
+        public Plan? Plan { get; set; }
 
-        public List<Factura> Facturas { get; set; } = new();
+        public List<Factura>? Facturas { get; set; } 
     }
 }

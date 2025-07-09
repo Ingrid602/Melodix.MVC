@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class SeguidoresUsuarios
     {
@@ -11,7 +11,7 @@ namespace Melodix.MVC.Models
         public string SeguidoId { get; set; }   // a quien sigue
         public DateTime Fecha { get; set; }
 
-        public ApplicationUser Seguidor { get; set; }
-        public ApplicationUser Seguido { get; set; }
+        public ApplicationUser? Seguidor { get; set; }
+        public ApplicationUser? Seguido { get; set; }
     }
 }

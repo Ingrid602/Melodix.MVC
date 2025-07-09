@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class Album
     {
@@ -12,11 +12,11 @@ namespace Melodix.MVC.Models
         public string Nombre { get; set; }
         public DateTime FechaLanzamiento { get; set; }
 
-        public Artista Artista { get; set; }
-        public List<Cancion> Canciones { get; set; } = new();
+        public Artista? Artista { get; set; }
+        public List<Cancion>? Canciones { get; set; } 
 
         // Usuarios que guardaron este álbum (muchos a muchos simplificado)
-        public List<ApplicationUser> UsuariosQueLoGuardaron { get; set; } = new();
+        public List<ApplicationUser>? UsuariosQueLoGuardaron { get; set; } 
 
     }
 }

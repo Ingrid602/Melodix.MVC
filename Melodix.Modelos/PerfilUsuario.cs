@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class PerfilUsuario
     {
@@ -11,6 +11,6 @@ namespace Melodix.MVC.Models
         public DateTime FechaNacimiento { get; set; }
         public string Pais { get; set; }
 
-        public ApplicationUser Usuario { get; set; }
+        public ApplicationUser? Usuario { get; set; }
     }
 }

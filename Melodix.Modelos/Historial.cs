@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class Historial
     {
@@ -11,7 +11,7 @@ namespace Melodix.MVC.Models
         public int CancionId { get; set; }
         public DateTime FechaHora { get; set; }
 
-        public ApplicationUser Usuario { get; set; }
-        public Cancion Cancion { get; set; }
+        public ApplicationUser? Usuario { get; set; }
+        public Cancion? Cancion { get; set; }
     }
 }

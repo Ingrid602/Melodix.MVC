@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class Cancion
     {
@@ -14,10 +14,10 @@ namespace Melodix.MVC.Models
         public string Genero { get; set; }
         public string ArchivoURL { get; set; }
 
-        public Album Album { get; set; }
-        public Artista Artista { get; set; }
+        public Album? Album { get; set; }
+        public Artista? Artista { get; set; }
 
-        public List<PlaylistCancion> PlaylistCanciones { get; set; } = new();
-        public List<Historial> Historiales { get; set; } = new();
+        public List<PlaylistCancion>? PlaylistCanciones { get; set; }
+        public List<Historial>? Historiales { get; set; }
     }
 }

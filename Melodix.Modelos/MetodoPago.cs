@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
-    public class MetodoMetodo
+    public class MetodoPago
     {
+
         [Key]
         public int MetodoPagoId { get; set; }
         public string Nombre { get; set; }
 
-        public List<DetallePago> DetallesPago { get; set; } = new();
+        public List<DetallePago>? DetallesPago { get; set; } 
     }
 }

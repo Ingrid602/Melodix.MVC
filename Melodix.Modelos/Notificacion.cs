@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Melodix.MVC.Models
+namespace Melodix.Modelos
 {
     public class Notificacion
     {
@@ -11,6 +11,6 @@ namespace Melodix.MVC.Models
         public DateTime Fecha { get; set; }
         public bool Leida { get; set; }
 
-        public ApplicationUser Usuario { get; set; }
+        public ApplicationUser? Usuario { get; set; }
     }
 }

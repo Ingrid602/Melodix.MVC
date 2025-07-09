@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melodix.MVC", "Melodix.MVC\Melodix.MVC.csproj", "{64FE2CCF-7274-4B3E-B71E-EFCB13671613}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melodix.Modelos", "Melodix.Modelos\Melodix.Modelos.csproj", "{1C087AF6-8136-45E9-AFF0-74D8041B90C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melodix.API", "Melodix.API\Melodix.API.csproj", "{67A50B86-2265-4170-A3C9-42D859FEC858}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{64FE2CCF-7274-4B3E-B71E-EFCB13671613}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64FE2CCF-7274-4B3E-B71E-EFCB13671613}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64FE2CCF-7274-4B3E-B71E-EFCB13671613}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C087AF6-8136-45E9-AFF0-74D8041B90C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C087AF6-8136-45E9-AFF0-74D8041B90C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C087AF6-8136-45E9-AFF0-74D8041B90C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C087AF6-8136-45E9-AFF0-74D8041B90C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67A50B86-2265-4170-A3C9-42D859FEC858}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67A50B86-2265-4170-A3C9-42D859FEC858}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67A50B86-2265-4170-A3C9-42D859FEC858}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67A50B86-2265-4170-A3C9-42D859FEC858}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
