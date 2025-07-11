@@ -4,8 +4,7 @@ namespace Melodix.Modelos
 {
     public class SeguidoresUsuarios
     {
-        [Key]
-        public int Id { get; set; }
+        
 
         public string SeguidorId { get; set; }  // quien sigue
         public string SeguidoId { get; set; }   // a quien sigue

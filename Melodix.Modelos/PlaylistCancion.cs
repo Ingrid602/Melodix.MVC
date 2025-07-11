@@ -5,11 +5,9 @@ namespace Melodix.Modelos
 {
     public class PlaylistCancion
     {
-        [Key]
-        [Column(Order = 0)]
+        
         public int PlaylistId { get; set; }
-        [Key]
-        [Column(Order = 1)]
+        
         public int CancionId { get; set; }
 
         public int Orden { get; set; }

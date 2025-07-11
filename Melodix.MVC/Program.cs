@@ -1,4 +1,4 @@
-using Melodix.MVC.Data;
+using Melodix.Data.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

@@ -12,7 +12,6 @@ namespace Melodix.Modelos
 
         // Perfil extendido
         public PerfilUsuario? Perfil { get; set; }
-
         // Navegación
         public List<Suscripcion>? Suscripciones { get; set; } 
         public List<Factura>? Facturas { get; set; } 

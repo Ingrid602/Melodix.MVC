@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Melodix.Modelos
 {
     public class PerfilUsuario
     {
-        [Key]
+        [Key, ForeignKey("Usuario")]
         public string PerfilUsuarioId { get; set; } // PK y FK a ApplicationUser.Id
         public string Bio { get; set; }
         public string FotoUrl { get; set; }
