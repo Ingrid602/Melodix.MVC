@@ -100,6 +100,12 @@ namespace Melodix.Data.Data.Migrations
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("FechaNacimiento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Genero")
+                        .HasColumnType("int");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -485,6 +491,43 @@ namespace Melodix.Data.Data.Migrations
                     b.ToTable("SeguidoresUsuarios");
                 });
 
+            modelBuilder.Entity("Melodix.Modelos.SolicitudMusico", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Distribuidora")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaSolicitud")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Mensaje")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NombreArtistico")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("SolicitudesMusico");
+                });
+
             modelBuilder.Entity("Melodix.Modelos.Suscripcion", b =>
                 {
                     b.Property<int>("SuscripcionId")
@@ -841,6 +884,17 @@ namespace Melodix.Data.Data.Migrations
                     b.Navigation("Seguido");
 
                     b.Navigation("Seguidor");
+                });
+
+            modelBuilder.Entity("Melodix.Modelos.SolicitudMusico", b =>
+                {
+                    b.HasOne("Melodix.Modelos.ApplicationUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Melodix.Modelos.Suscripcion", b =>

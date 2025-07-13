@@ -37,6 +37,8 @@ namespace Melodix.Data.Data
 
         public DbSet <Suscripcion> Suscripciones   { get; set; }
 
+        public DbSet <SolicitudMusico> SolicitudesMusico { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(l => new { l.LoginProvider, l.ProviderKey });
@@ -67,13 +69,13 @@ namespace Melodix.Data.Data
                 .HasOne(su => su.Seguidor)
                 .WithMany(u => u.Siguiendo)
                 .HasForeignKey(su => su.SeguidorId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<SeguidoresUsuarios>()
                 .HasOne(su => su.Seguido)
                 .WithMany(u => u.Seguidores)
                 .HasForeignKey(su => su.SeguidoId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<SeguidoresArtistas>()
     .HasKey(sa => new { sa.UsuarioId, sa.ArtistaId });
@@ -82,13 +84,13 @@ namespace Melodix.Data.Data
                 .HasOne(sa => sa.Usuario)
                 .WithMany(u => u.SeguidoresArtistas)
                 .HasForeignKey(sa => sa.UsuarioId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<SeguidoresArtistas>()
                 .HasOne(sa => sa.Artista)
                 .WithMany(a => a.Seguidores)
                 .HasForeignKey(sa => sa.ArtistaId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
 
         }

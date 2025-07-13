@@ -10,6 +10,8 @@ namespace Melodix.Modelos
         public DateTime FechaCreacion { get; set; }
         public RolUsuario Rol { get; set; }
 
+        public DateTime FechaNacimiento { get; set; }
+        public GeneroUsuario Genero { get; set; }
         // Perfil extendido
         public PerfilUsuario? Perfil { get; set; }
         // Navegación

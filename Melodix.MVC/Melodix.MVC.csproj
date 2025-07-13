@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Melodix.APIConsumer\Melodix.APIConsumer.csproj" />
     <ProjectReference Include="..\Melodix.Data\Melodix.Data.csproj" />
     <ProjectReference Include="..\Melodix.Modelos\Melodix.Modelos.csproj" />
   </ItemGroup>

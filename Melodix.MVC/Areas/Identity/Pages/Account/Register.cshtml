@@ -1,4 +1,5 @@
 ﻿@page
+@using Melodix.Modelos
 @model RegisterModel
 
 @{
@@ -119,6 +120,11 @@
 
         <form method="post">
             <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+            <div class="form-floating">
+                <input asp-for="Input.Nombre" class="form-control" placeholder="Nombre" />
+                <label asp-for="Input.Nombre">Nombre</label>
+                <span asp-validation-for="Input.Nombre" class="text-danger"></span>
+            </div>
 
             <div class="form-floating">
                 <input asp-for="Input.Email" class="form-control" placeholder="Email" />
@@ -136,6 +142,19 @@
                 <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" />
                 <label asp-for="Input.ConfirmPassword">Confirmar Contraseña</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.FechaNacimiento" class="control-label"></label>
+                <input asp-for="Input.FechaNacimiento" class="form-control" />
+                <span asp-validation-for="Input.FechaNacimiento" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Genero" class="control-label"></label>
+                <select asp-for="Input.Genero" class="form-control" asp-items="Html.GetEnumSelectList<GeneroUsuario>()">
+                    <option value="">Seleccione un género</option>
+                </select>
+                <span asp-validation-for="Input.Genero" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn-spotify">Registrarse</button>
