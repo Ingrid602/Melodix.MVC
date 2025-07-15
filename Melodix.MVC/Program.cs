@@ -1,7 +1,11 @@
 using Melodix.Data.Data;
 using Melodix.Modelos;
+using Melodix.MVC.Servicios;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace Melodix.MVC
 {
@@ -21,7 +25,13 @@ namespace Melodix.MVC
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+            // Configurar servicio de correo
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+
             var app = builder.Build();
+
+           
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
