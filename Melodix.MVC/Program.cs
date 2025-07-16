@@ -6,13 +6,18 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Melodix.APIConsumer;
 
 namespace Melodix.MVC
 {
     public class Program
     {
         public static void Main(string[] args)
+
+           
         {
+            Crud<PerfilUsuario>.EndPoint = "https://localhost:7093/api/PerfilUsuarios";
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -56,6 +61,8 @@ namespace Melodix.MVC
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
+
+            
 
             app.Run();
         }

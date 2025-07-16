@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
+using System.Text.Json;
 
 namespace Melodix.APIConsumer
 {
@@ -24,6 +25,22 @@ namespace Melodix.APIConsumer
             }
         }
 
+        public static T? GetById(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                var response = client.GetAsync($"{EndPoint}/{id}").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = response.Content.ReadAsStringAsync().Result;
+                    return JsonConvert.DeserializeObject<T>(json);
+                }
+                else
+                {
+                    throw new Exception($"Error: {response.StatusCode}");
+                }
+            }
+        }
         public static T GetById(int id)
         {
             using (var client = new HttpClient())
@@ -78,6 +95,29 @@ namespace Melodix.APIConsumer
                             "application/json"
                         )
                     ).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    throw new Exception($"Error: {response.StatusCode}");
+                }
+            }
+        }
+        public static bool Update(string id, T item)
+        {
+            using (var client = new HttpClient())
+            {
+                var response = client.PutAsync(
+                    $"{EndPoint}/{id}",
+                    new StringContent(
+                        JsonConvert.SerializeObject(item),
+                        Encoding.UTF8,
+                        "application/json"
+                    )
+                ).Result;
 
                 if (response.IsSuccessStatusCode)
                 {

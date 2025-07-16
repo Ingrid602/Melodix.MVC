@@ -1,4 +1,5 @@
-﻿using Melodix.Modelos;
+﻿using Melodix.APIConsumer;
+using Melodix.Modelos;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -106,6 +107,18 @@ namespace Melodix.MVC.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("Usuario registrado exitosamente.");
+
+                    //  Aquí se crea el perfil
+                    Crud<PerfilUsuario>.EndPoint = "https://localhost:7093/api/PerfilUsuarios"; 
+                    var perfil = new PerfilUsuario
+                    {
+                        PerfilUsuarioId = user.Id,
+                        Bio = "Nuevo usuario",
+                        Pais = "",
+                        FechaNacimiento = user.FechaNacimiento,
+                        FotoUrl = "/img/usuarios/default-user.png"
+                    };
+                    Crud<PerfilUsuario>.Create(perfil);
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

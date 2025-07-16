@@ -1,5 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+<!DOCTYPE html>
 <html lang="en">
+@inject UserManager<Melodix.Modelos.ApplicationUser> UserManager
+@inject SignInManager<Melodix.Modelos.ApplicationUser> SignInManager
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,7 +30,54 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
-                    <partial name="_LoginPartial" />
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        var user = await UserManager.GetUserAsync(User);
+                        var foto = "/img/usuarios/default-user.png"; // valor por defecto
+
+                        if (user != null)
+                        {
+                            var perfil = Melodix.APIConsumer.Crud<Melodix.Modelos.PerfilUsuario>.GetById(user.Id);
+                            if (perfil != null && !string.IsNullOrEmpty(perfil.FotoUrl))
+                            {
+                                foto = perfil.FotoUrl;
+                            }
+                        }
+
+
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="perfilDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="@foto" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;" alt="Perfil" />
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perfilDropdown">
+                                    <li><a class="dropdown-item" asp-controller="PerfilUsuarios" asp-action="Index">Ver perfil</a></li>
+                                    <li>
+                                        <form asp-area="Identity"
+                                              asp-page="/Account/Logout"
+                                              asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
+                                              method="post"
+                                              class="dropdown-item p-0 m-0 border-0 bg-transparent">
+                                            <button type="submit" class="btn w-100 text-start">Cerrar sesión</button>
+                                        </form>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Iniciar sesión</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Registrarse</a>
+                            </li>
+                        </ul>
+                    }
+
                 </div>
             </div>
         </nav>
