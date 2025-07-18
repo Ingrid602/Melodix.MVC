@@ -1,0 +1,29 @@
+﻿@model Melodix.Modelos.Playlist
+
+<form asp-action="Edit" asp-controller="Playlists" asp-route-id="@Model.PlaylistId" method="post">
+    <input type="hidden" name="PlaylistId"  />
+
+    <input type="hidden" asp-for="UsuarioId" />
+
+
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label">Nombre de la playlist</label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="EsPrivada" class="form-check-input" />
+        <label asp-for="EsPrivada" class="form-check-label">¿Privada?</label>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-success">Guardar cambios</button>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

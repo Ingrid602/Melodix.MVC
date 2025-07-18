@@ -1,0 +1,28 @@
+﻿@model List<Melodix.Modelos.Playlist>  
+
+@{
+    ViewData["Title"] = "Tus Playlists";
+}
+
+< Botón tipo Spotify para crear playlist >
+<div class="position-fixed" style="top: 80px; left: 20px; z-index: 1050;">
+    <button class="btn btn-dark rounded-circle" data-bs-toggle="modal" data-bs-target="#modalCrearPlaylist" title="Crea una playlist, carpeta o jam" style="width: 45px; height: 45px; font-size: 20px;">
+        +
+    </button>
+
+</div>
+<!-- Modal para crear playlist -->
+<div class="modal fade" id="modalCrearPlaylist" tabindex="-1" aria-labelledby="modalCrearPlaylistLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="modalCrearPlaylistLabel">Crear nueva playlist</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                    @await Html.PartialAsync("Create", new Melodix.Modelos.Playlist())
+            </div>
+
+        </div>
+    </div>
+</div>
