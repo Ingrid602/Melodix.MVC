@@ -2,6 +2,7 @@ using Melodix.Data.Data;
 using Melodix.Modelos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 namespace Melodix.API
 {
     public class Program
@@ -23,6 +24,13 @@ namespace Melodix.API
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
+            builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
+
 
             var app = builder.Build();
 

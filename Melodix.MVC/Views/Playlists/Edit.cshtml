@@ -1,10 +1,10 @@
 ﻿@model Melodix.Modelos.Playlist
 
-<form asp-action="Edit" asp-controller="Playlists" asp-route-id="@Model.PlaylistId" method="post">
+<form asp-action="Edit" asp-controller="Playlists" asp-route-id="@Model.PlaylistId" method="post" enctype="multipart/form-data">
     <input type="hidden" name="PlaylistId"  />
 
     <input type="hidden" asp-for="UsuarioId" />
-
+    <input type="hidden" asp-for="ImagenUrl" />
 
     <div class="mb-3">
         <label asp-for="Nombre" class="form-label">Nombre de la playlist</label>
@@ -20,6 +20,33 @@
     <div class="d-flex justify-content-end">
         <button type="submit" class="btn btn-success">Guardar cambios</button>
     </div>
+
+    <div class="mb-3">
+        <label class="form-label">Cambiar imagen</label>
+        <input type="file" name="imagenArchivo" class="form-control" accept="image/*" />
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+    {
+        <div class="mb-3">
+            <label class="form-label">Imagen actual</label><br />
+            <img src="@Model.ImagenUrl" alt="Imagen actual" style="width: 120px; height: 120px; object-fit: cover; border-radius: 10px;" />
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+    {
+        <div class="mb-3">
+            <label>Imagen actual:</label><br />
+            <img src="@Model.ImagenUrl" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px;" />
+        </div>
+
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="EliminarImagen" name="EliminarImagen" value="true" />
+            <label class="form-check-label" for="EliminarImagen">Eliminar imagen</label>
+        </div>
+    }
+
+
 </form>
 
 @section Scripts {

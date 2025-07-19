@@ -14,6 +14,8 @@ namespace Melodix.Modelos
         public string Genero { get; set; }
         public string ArchivoURL { get; set; }
 
+        public string? Urlimagen {  get; set; }
+
         public Album? Album { get; set; }
         public Artista? Artista { get; set; }
 

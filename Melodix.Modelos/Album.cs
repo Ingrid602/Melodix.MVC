@@ -12,6 +12,8 @@ namespace Melodix.Modelos
         public string Nombre { get; set; }
         public DateTime FechaLanzamiento { get; set; }
 
+        public String? urlImagen{ get; set; }
+
         public Artista? Artista { get; set; }
         public List<Cancion>? Canciones { get; set; } 
 

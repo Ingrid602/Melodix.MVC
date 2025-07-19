@@ -25,7 +25,10 @@ namespace Melodix.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cancion>>> GetCanciones()
         {
-            return await _context.Canciones.ToListAsync();
+            return await _context.Canciones
+         .Include(c => c.Album)
+         .Include(c => c.Artista)
+         .ToListAsync();
         }
 
         // GET: api/Canciones/5

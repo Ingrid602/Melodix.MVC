@@ -11,6 +11,23 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Melodix.MVC.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #121212, #1e1e1e);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        a {
+            color: #1db954;
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+    </style>
+
 </head>
 <body>
     <header>
@@ -23,12 +40,14 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+
                     </ul>
                     @if (SignInManager.IsSignedIn(User))
                     {

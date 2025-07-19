@@ -11,6 +11,33 @@
     </button>
 
 </div>
+<div class="d-flex">
+    <!-- Columna izquierda: listas del usuario -->
+    <div style="width: 250px; background-color: #1a1a1a; color: white; padding: 20px;">
+        <h5 class="text-uppercase mb-4">Tus Playlists</h5>
+        <ul class="list-unstyled">
+                @foreach (var playlist in Model)
+                {
+                <li class="mb-3">
+                    <a href="@Url.Action("Details", "Playlists", new { id = playlist.PlaylistId })" style="text-decoration: none; color: white;">
+                        <div class="d-flex align-items-center">
+                            <img src="@playlist.ImagenUrl" alt="img" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; margin-right: 10px;">
+                            <span>@playlist.Nombre</span>
+                        </div>
+                    </a>
+                </li>
+                }
+        </ul>
+    </div>
+
+    <!-- Contenido derecho -->
+    <div class="flex-grow-1 p-4">
+        <!-- Aquí podrías mostrar más contenido -->
+        <h3 style="color:white;">Bienvenida a tu biblioteca de playlists</h3>
+        <!-- Aquí puede ir tu botón flotante si quieres mantenerlo -->
+    </div>
+</div>
+
 <!-- Modal para crear playlist -->
 <div class="modal fade" id="modalCrearPlaylist" tabindex="-1" aria-labelledby="modalCrearPlaylistLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

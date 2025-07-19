@@ -70,6 +70,9 @@ namespace Melodix.Data.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("urlImagen")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("AlbumId");
 
                     b.HasIndex("ArtistaId");
@@ -197,6 +200,9 @@ namespace Melodix.Data.Data.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Urlimagen")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CancionId");
@@ -421,6 +427,9 @@ namespace Melodix.Data.Data.Migrations
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ImagenUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -853,13 +862,13 @@ namespace Melodix.Data.Data.Migrations
                     b.HasOne("Melodix.Modelos.Artista", "Artista")
                         .WithMany("Seguidores")
                         .HasForeignKey("ArtistaId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Melodix.Modelos.ApplicationUser", "Usuario")
                         .WithMany("SeguidoresArtistas")
                         .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Artista");
@@ -872,13 +881,13 @@ namespace Melodix.Data.Data.Migrations
                     b.HasOne("Melodix.Modelos.ApplicationUser", "Seguido")
                         .WithMany("Seguidores")
                         .HasForeignKey("SeguidoId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Melodix.Modelos.ApplicationUser", "Seguidor")
                         .WithMany("Siguiendo")
                         .HasForeignKey("SeguidorId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Seguido");

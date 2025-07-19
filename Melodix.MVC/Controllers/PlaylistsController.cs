@@ -51,7 +51,7 @@ namespace Melodix.MVC.Controllers
         // POST: PlaylistsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Playlist data)
+        public async Task<IActionResult> Create(Playlist data, IFormFile Imagen)
         {
             try
             {
@@ -64,14 +64,40 @@ namespace Melodix.MVC.Controllers
                 data.UsuarioId = user.Id;
                 data.FechaCreacion = DateTime.Now;
 
-                
+                //  Procesar imagen
+                if (Imagen != null && Imagen.Length > 0)
+                {
+                    // Crear carpeta si no existe
+                    var carpeta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "playlists");
+                    if (!Directory.Exists(carpeta))
+                    {
+                        Directory.CreateDirectory(carpeta);
+                    }
+
+                    var nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(Imagen.FileName);
+                    var rutaArchivo = Path.Combine(carpeta, nombreArchivo);
+
+                    using (var stream = new FileStream(rutaArchivo, FileMode.Create))
+                    {
+                        await Imagen.CopyToAsync(stream);
+                    }
+
+                    // Guardar ruta relativa para usarla en la vista
+                    data.ImagenUrl = "/img/playlists/" + nombreArchivo;
+                }
+                else
+                {
+                    // Si no se sube imagen, se usa una por defecto
+                    data.ImagenUrl = "/img/playlists/default-playlist.png";
+                }
+
                 // Este objeto sí tendrá el PlaylistId asignado por la API
                 var nuevaPlaylist = Crud<Playlist>.Create(data);
 
                 // redirigir correctamente a Details
                 return RedirectToAction("Details", new { id = nuevaPlaylist.PlaylistId });
 
-                return RedirectToAction(nameof(Index));
+                
             }
             catch(Exception ex) 
             {
@@ -90,7 +116,7 @@ namespace Melodix.MVC.Controllers
         // POST: PlaylistsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <IActionResult> Edit(int id, Playlist data)
+        public async Task <IActionResult> Edit(int id, Playlist data, IFormFile? imagenArchivo, bool EliminarImagen)
         {
             try
             {
@@ -99,12 +125,47 @@ namespace Melodix.MVC.Controllers
                     return Unauthorized();
 
                 data.PlaylistId = id;
-                data.UsuarioId = user.Id; 
+                data.UsuarioId = user.Id;
 
-                //  Agrega este log para depuración para ver el error 
-                Console.WriteLine($"🟡 [DEBUG] Editando PlaylistId: {id}, Nombre: {data.Nombre}, UsuarioId: {data.UsuarioId}");
+                // Si el usuario marcó eliminar imagen
+                if (EliminarImagen && !string.IsNullOrEmpty(data.ImagenUrl))
+                {
+                    // Eliminar el archivo físico (opcional)
+                    var rutaFisica = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", data.ImagenUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(rutaFisica))
+                    {
+                        System.IO.File.Delete(rutaFisica);
+                    }
+
+                    // Reemplazar por imagen por defecto
+                    data.ImagenUrl = "/img/playlists/default.png";
+                }
+                // Recuperar la playlist actual para obtener la imagen existente
+                var playlistActual = Crud<Playlist>.GetById(id);
+
+                if (imagenArchivo != null && imagenArchivo.Length > 0)
+                {
+                    var nombreArchivo = $"{Guid.NewGuid()}{Path.GetExtension(imagenArchivo.FileName)}";
+                    var ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/playlists", nombreArchivo);
+
+                    using (var stream = new FileStream(ruta, FileMode.Create))
+                    {
+                        await imagenArchivo.CopyToAsync(stream);
+                    }
+
+                    data.ImagenUrl = $"/img/playlists/{nombreArchivo}";
+                }
+                else if(!EliminarImagen)
+                {
+                    
+                    data.ImagenUrl = playlistActual.ImagenUrl;
+                }
+
+                
+
 
                 var success = Crud<Playlist>.Update(id, data);
+
                 if (!success)
                 {
                     throw new Exception("No se pudo actualizar la playlist.");

@@ -12,6 +12,7 @@ namespace Melodix.Modelos
         public string Nombre { get; set; }
         public DateTime FechaCreacion { get; set; }
         public bool EsPrivada { get; set; }
+        public string? ImagenUrl { get; set; }
 
         public ApplicationUser? Usuario { get; set; }
 
