@@ -1,0 +1,178 @@
+﻿@model Melodix.Modelos.Album
+
+@{
+    ViewData["Title"] = "Detalles del Álbum";
+
+    var cancionSeleccionada = Model?.Canciones?.FirstOrDefault();
+    var totalMinutos = 0;
+    var totalSegundos = 0;
+
+    if (Model?.Canciones != null)
+    {
+        foreach (var c in Model.Canciones)
+        {
+            var partes = c.Duracion?.Split(':');
+            if (partes?.Length == 2)
+            {
+                totalMinutos += int.Parse(partes[0]);
+                totalSegundos += int.Parse(partes[1]);
+            }
+        }
+        totalMinutos += totalSegundos / 60;
+        totalSegundos %= 60;
+    }
+}
+
+<div class="container-fluid bg-dark text-white p-4">
+    <!-- Encabezado del álbum -->
+    <div class="d-flex align-items-end gap-4 mb-4">
+        <img src="@Model.urlImagen" style="width: 200px; height: 200px; object-fit: cover;" class="rounded shadow" />
+        <div>
+            <p class="mb-1">Álbum</p>
+            <h1 class="display-4 fw-bold">@Model.Nombre</h1>
+            <p class="text-muted">
+                @Model.Artista?.NombreArtistico • @Model.FechaLanzamiento.Year •
+                @Model.Canciones?.Count() canción(es), @totalMinutos min @totalSegundos s
+            </p>
+        </div>
+    </div>
+
+    <!-- Canciones + Reproductor lateral -->
+    <div class="d-flex bg-dark text-white" style="min-height: 60vh;">
+        <!-- Lista de canciones -->
+        <div class="p-4 w-75">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Título</th>
+                        <th>Duración</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Canciones != null)
+                    {
+                        int index = 1;
+                        foreach (var cancion in Model.Canciones)
+                        {
+                            <tr class="cancion-row" style="cursor:pointer"
+                                data-nombre="@cancion.Nombre"
+                                data-artista="@cancion.Artista?.NombreArtistico"
+                                data-genero="@cancion.Genero"
+                                data-duracion="@cancion.Duracion"
+                                data-imagen="@cancion.Urlimagen"
+                                data-archivo="@cancion.ArchivoURL">
+                                <td>@index</td>
+                                <td>@cancion.Nombre</td>
+                                <td>@cancion.Duracion</td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="bg-black p-4 shadow-lg" style="border-left: 1px solid #333; width: 380px;">
+            <img src="@Model.urlImagen" class="img-fluid rounded mb-3" style="object-fit: cover;" />
+            <h5 id="song-name" class="fw-bold">@cancionSeleccionada.Nombre</h5>
+            <p><strong>Artista:</strong> <span id="song-artist">@cancionSeleccionada.Artista?.NombreArtistico</span></p>
+            <p><strong>Género:</strong> <span id="song-genre">@cancionSeleccionada.Genero</span></p>
+            <p><strong>Duración:</strong> <span id="song-duration">@cancionSeleccionada.Duracion</span></p>
+
+            <div class="reproductor-personalizado">
+                <button id="prev-btn" class="repro-boton" title="Anterior">⏮</button>
+
+                <audio id="song-player" controls class="w-100 audio-estilizado" style="height: 46px;">
+                    <source id="song-src" src="@cancionSeleccionada.ArchivoURL" type="audio/mpeg" />
+                    Tu navegador no soporta audio.
+                </audio>
+
+                <button id="next-btn" class="repro-boton" title="Siguiente">⏭</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .reproductor-personalizado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-top: 20px;
+    }
+
+    .repro-boton {
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        font-size: 22px;
+        padding: 6px 12px;
+        border-radius: 50%;
+        transition: background-color 0.2s;
+    }
+
+        .repro-boton:hover {
+            background-color: #1db954;
+            color: #000;
+        }
+
+    .audio-estilizado {
+        flex-grow: 1;
+        background-color: transparent;
+        border: none;
+        height: 64px; /* ⬅ MÁS ALTO para asegurar visibilidad de la barra */
+        filter: invert(1) brightness(0.8);
+    }
+
+
+        /* Opcional: estilo para WebKit (Chrome, Edge) */
+        .audio-estilizado::-webkit-media-controls-panel {
+            background-color: transparent;
+            color: white;
+        }
+</style>
+
+
+
+@section Scripts {
+    <script>
+        const rows = Array.from(document.querySelectorAll('.cancion-row'));
+        const audio = document.getElementById('song-player');
+        const source = document.getElementById('song-src');
+        let currentIndex = 0;
+
+        function reproducir(index) {
+            if (index < 0 || index >= rows.length) return;
+
+            const row = rows[index];
+            document.getElementById('song-name').innerText = row.dataset.nombre;
+            document.getElementById('song-artist').innerText = row.dataset.artista;
+            document.getElementById('song-genre').innerText = row.dataset.genero;
+            document.getElementById('song-duration').innerText = row.dataset.duracion;
+            source.src = row.dataset.archivo;
+            audio.load();
+            audio.play();
+            currentIndex = index;
+        }
+
+        rows.forEach((row, index) => {
+            row.addEventListener('click', () => reproducir(index));
+            if (row.dataset.archivo === source.getAttribute('src')) currentIndex = index;
+        });
+
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            reproducir(currentIndex - 1);
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            reproducir(currentIndex + 1);
+        });
+    </script>
+}
+
+
+
+}
