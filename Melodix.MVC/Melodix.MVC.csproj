@@ -32,4 +32,8 @@
     <ProjectReference Include="..\Melodix.Modelos\Melodix.Modelos.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\NewFolder\" />
+  </ItemGroup>
+
 </Project>

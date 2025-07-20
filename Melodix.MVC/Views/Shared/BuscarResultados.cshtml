@@ -1,0 +1,120 @@
+﻿@model Melodix.MVC.Models.BuscarViewModel
+@{
+    Layout = null;
+}
+
+<div class="container-fluid px-4">
+    <h4 class="text-white mb-4">Resultados para: "@Model.Termino"</h4>
+
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-95 p-4 overflow-auto" style="z-index: 9999;" id="resultadosBusqueda">
+        <button class="btn btn-outline-light mb-3" onclick="document.getElementById('resultadosBusqueda').remove()">Cerrar</button>
+        @await Html.PartialAsync("~/Views/Buscar/Index.cshtml", Model)
+    </div>
+
+    @* Canciones *@
+    @if (Model.Canciones.Any())
+    {
+        <h5 class="text-white">Canciones</h5>
+        <div class="row mb-4">
+            @foreach (var c in Model.Canciones)
+            {
+                <div class="col-md-2 mb-3">
+                    <a asp-controller="Canciones" asp-action="Details" asp-route-id="@c.CancionId" class="text-decoration-none text-white" target="_self">
+                        <div class="card bg-dark text-white h-100">
+                            <img src="@(string.IsNullOrEmpty(c.Urlimagen) ? "/img/default-song.jpg" : c.Urlimagen)" class="card-img-top" alt="Canción" style="height: 120px; object-fit: cover;">
+                            <div class="card-body p-2">
+                                <p class="card-title mb-1">@c.Nombre</p>
+                                <p class="card-text small text-muted">@c.Artista?.NombreArtistico</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+
+
+
+    @* Álbumes *@
+    @if (Model.Albumes.Any())
+    {
+        <h5 class="text-white">Álbumes</h5>
+        <div class="row mb-4">
+            @foreach (var a in Model.Albumes)
+            {
+                <div class="col-md-2 mb-3">
+                    <div class="card bg-dark text-white h-100">
+                        <img src="@(string.IsNullOrEmpty(a.urlImagen) ? "/img/default-album.jpg" : a.urlImagen)" class="card-img-top" alt="Álbum" style="height: 120px; object-fit: cover;">
+                        <div class="card-body p-2">
+                            <p class="card-title mb-1">@a.Nombre</p>
+                            <p class="card-text small text-muted">@a.Artista?.NombreArtistico</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @* Artistas *@
+    @if (Model.Artistas.Any())
+    {
+        <h5 class="text-white">Artistas</h5>
+        <div class="row mb-4">
+            @foreach (var ar in Model.Artistas)
+            {
+                <div class="col-md-2 mb-3">
+                    <div class="card bg-dark text-white h-100">
+                        <div class="card-body p-2 text-center">
+                            <p class="card-title mb-0">@ar.NombreArtistico</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @* Perfiles *@
+    @if (Model.Perfiles.Any())
+    {
+        <h5 class="text-white">Perfiles</h5>
+        <div class="row mb-4">
+            @foreach (var p in Model.Perfiles)
+            {
+                <div class="col-md-2 mb-3">
+                    <div class="card bg-dark text-white h-100">
+                        <img src="@(string.IsNullOrEmpty(p.FotoUrl) ? "/img/usuarios/default-user.png" : p.FotoUrl)" class="card-img-top rounded-circle p-2" alt="Perfil" style="height: 120px; object-fit: cover;">
+                        <div class="card-body p-2 text-center">
+                            <p class="card-title mb-0">@p.Usuario?.Nombre</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @* Playlists *@
+    @if (Model.Playlists.Any())
+    {
+        <h5 class="text-white">Playlists</h5>
+        <div class="row mb-4">
+            @foreach (var pl in Model.Playlists)
+            {
+                <div class="col-md-2 mb-3">
+                    <div class="card bg-dark text-white h-100">
+                        <img src="@(string.IsNullOrEmpty(pl.ImagenUrl) ? "/img/default-playlist.jpg" : pl.ImagenUrl)" class="card-img-top" alt="Playlist" style="height: 120px; object-fit: cover;">
+                        <div class="card-body p-2">
+                            <p class="card-title mb-1">@pl.Nombre</p>
+                            <p class="card-text small text-muted">@pl.Usuario?.Nombre</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @* Sin resultados *@
+    @if (!Model.Canciones.Any() && !Model.Albumes.Any() && !Model.Artistas.Any() && !Model.Perfiles.Any() && !Model.Playlists.Any())
+    {
+        <p class="text-muted">No se encontraron resultados.</p>
+    }
+</div>

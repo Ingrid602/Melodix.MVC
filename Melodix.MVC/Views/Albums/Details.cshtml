@@ -1,0 +1,34 @@
+﻿@model Melodix.Modelos.Album
+
+@{
+    ViewData["Title"] = "Detalles del Álbum";
+}
+
+<div class="container text-white py-5">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-3">
+            <img src="@(string.IsNullOrEmpty(Model.urlImagen) ? "/img/default-album.jpg" : Model.urlImagen)" class="img-fluid rounded shadow" alt="Álbum">
+        </div>
+        <div class="col-md-9">
+            <h2 class="display-5">@Model.Nombre</h2>
+            <p class="text-muted">Publicado el @Model.FechaLanzamiento.ToShortDateString()</p>
+            <p class="text-muted">Artista: @Model.Artista?.NombreArtistico</p>
+            <p>@Model.Artista?.Biografia</p>
+        </div>
+    </div>
+
+    @if (Model.Canciones != null && Model.Canciones.Any())
+    {
+        <h4 class="mt-4">Canciones del Álbum</h4>
+        <ul class="list-group list-group-flush">
+            @foreach (var cancion in Model.Canciones)
+            {
+                <li class="list-group-item bg-dark text-white border-secondary">@cancion.Nombre</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">Este álbum aún no tiene canciones registradas.</p>
+    }
+</div>

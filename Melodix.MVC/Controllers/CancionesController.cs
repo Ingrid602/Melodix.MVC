@@ -52,7 +52,19 @@ namespace Melodix.MVC.Controllers
         // GET: CancionesController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var data = Crud<Cancion>.GetById(id);
+
+            // Verificar si se cargó correctamente la canción
+            if (data == null)
+            {
+                return NotFound();
+            }
+
+            // Cargar el artista y álbum manualmente
+            data.Artista = Crud<Artista>.GetById(data.ArtistaId);
+            data.Album = Crud<Album>.GetById(data.AlbumId);
+
+            return View(data);
         }
 
         // GET: CancionesController/Create

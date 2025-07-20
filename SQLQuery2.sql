@@ -1,1 +1,1 @@
-﻿SELECT * FROM dbo.Playlists
+﻿SELECT * FROM dbo.Canciones

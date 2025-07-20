@@ -1,0 +1,102 @@
+﻿@model Melodix.MVC.Models.BuscarViewModel
+
+@{
+    ViewData["Title"] = "Buscar";
+}
+
+
+<h2 class="text-white mb-4">Resultados para: "@Model.Termino"</h2>
+
+<!-- Canciones -->
+@if (Model.Canciones.Any())
+{
+    <h3 class="text-white">Canciones</h3>
+    <div class="row row-cols-1 row-cols-md-4 g-4 mb-4">
+        @foreach (var cancion in Model.Canciones)
+        {
+            <div class="col">
+                <div class="card bg-dark text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@cancion.Nombre</h5>
+                        <p class="card-text">@cancion.Genero</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Álbumes -->
+@foreach (var a in Model.Albumes)
+{
+    <div class="col-md-2 mb-3">
+        <a asp-controller="Albums" asp-action="Details" asp-route-id="@a.AlbumId" class="text-decoration-none text-white">
+            <div class="card bg-dark text-white h-100">
+                <img src="@(string.IsNullOrEmpty(a.urlImagen) ? "/img/default-album.jpg" : a.urlImagen)" class="card-img-top" alt="Álbum" style="height: 120px; object-fit: cover;">
+                <div class="card-body p-2">
+                    <p class="card-title mb-1">@a.Nombre</p>
+                    <p class="card-text small text-muted">@a.Artista?.NombreArtistico</p>
+                </div>
+            </div>
+        </a>
+    </div>
+}
+
+
+<!-- Playlists -->
+@if (Model.Playlists.Any())
+{
+    <h3 class="text-white">Playlists</h3>
+    <div class="row row-cols-1 row-cols-md-4 g-4 mb-4">
+        @foreach (var playlist in Model.Playlists)
+        {
+            <div class="col">
+                <div class="card bg-dark text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@playlist.Nombre</h5>
+                        <p class="card-text">@playlist.FechaCreacion</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Perfiles -->
+@if (Model.Perfiles.Any())
+{
+    <h3 class="text-white">Perfiles</h3>
+    <div class="row row-cols-1 row-cols-md-4 g-4 mb-4">
+        @foreach (var perfil in Model.Perfiles)
+        {
+            <div class="col">
+                <div class="card bg-dark text-white h-100">
+                    <img src="@perfil.FotoUrl" class="card-img-top" style="object-fit: cover; height: 200px;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@perfil.Usuario.Nombre</h5>
+                        <p class="card-text">@perfil.Pais</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Artistas -->
+@if (Model.Artistas.Any())
+{
+    <h3 class="text-white">Artistas</h3>
+    <div class="row row-cols-1 row-cols-md-4 g-4 mb-4">
+        @foreach (var artista in Model.Artistas)
+        {
+            <div class="col">
+                <div class="card bg-dark text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@artista.NombreArtistico</h5>
+                        <p class="card-text">@artista.Biografia?.Substring(0, Math.Min(100, artista.Biografia.Length))...</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
