@@ -1,6 +1,6 @@
 ﻿@model Melodix.Modelos.Playlist
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
+<form asp-action="Create" asp-controller="Playlists" method="post" enctype="multipart/form-data">
     <div class="mb-3">
         <label asp-for="Nombre" class="form-label">Nombre de la playlist</label>
         <input asp-for="Nombre" class="form-control" />

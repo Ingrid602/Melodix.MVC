@@ -1,5 +1,8 @@
-﻿using Melodix.Data.Data;
+﻿using Melodix.APIConsumer;
+using Melodix.Data.Data;
+using Melodix.Modelos;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -11,10 +14,12 @@ namespace Melodix.MVC.Controllers
     {
 
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AlbumsController(ApplicationDbContext context)
+        public AlbumsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: AlbumsController
@@ -40,6 +45,15 @@ namespace Melodix.MVC.Controllers
 
             ViewBag.Album = albumSeleccionado;
             ViewBag.CurrentFilter = searchString;
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var playlistsDelUsuario = Crud<Playlist>.GetAll()
+                    .Where(p => p.UsuarioId == user.Id)
+                .ToList();
+
+                ViewBag.Playlists = playlistsDelUsuario;
+            }
 
             return View(albums);
         }
@@ -52,6 +66,7 @@ namespace Melodix.MVC.Controllers
                 .Include(a => a.Artista)
                 .Include(a => a.Canciones)
                 .ThenInclude(c => c.Artista) // Para que funcione c.Artista en el reproductor
+                .Include(a => a.UsuariosQueLoGuardaron)
                 .FirstOrDefaultAsync(a => a.AlbumId == id);
 
             if (album == null)
@@ -59,8 +74,55 @@ namespace Melodix.MVC.Controllers
                 return NotFound();
             }
 
-            return View(album); // 👈 Importante: se envía el modelo a la vista
+            //Para obtener todas las playlist del usuario logueado
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var playlistsDelUsuario = Crud<Playlist>.GetAll()
+                    .Where(p => p.UsuarioId == user.Id)
+                .ToList();
+
+                ViewBag.Playlists = playlistsDelUsuario;
+            }
+
+            return View(album); //   se envía el modelo a la vista
         }
+
+        //Metodo para guardar o borral un album de la biblioteca
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleGuardarAlbum(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login", "Account");
+
+            var album = await _context.Albums
+                .Include(a => a.UsuariosQueLoGuardaron)
+                .FirstOrDefaultAsync(a => a.AlbumId == id);
+
+            if (album == null)
+                return NotFound();
+
+            if (album.UsuariosQueLoGuardaron == null)
+                album.UsuariosQueLoGuardaron = new List<ApplicationUser>();
+
+            if (album.UsuariosQueLoGuardaron.Any(u => u.Id == user.Id))
+            {
+                // Ya está guardado, quitarlo
+                album.UsuariosQueLoGuardaron.Remove(user);
+            }
+            else
+            {
+                // No está guardado, agregarlo
+                album.UsuariosQueLoGuardaron.Add(user);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", new { id = album.AlbumId });
+        }
+
 
 
         // GET: AlbumsController/Create

@@ -1,20 +1,23 @@
 ﻿using Melodix.APIConsumer;
+using Melodix.Data.Data;
 using Melodix.Modelos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Melodix.MVC.Controllers
 {
     public class PlaylistsController : Controller
     {
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public PlaylistsController(UserManager<ApplicationUser> userManager)
+        public PlaylistsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
+            _context = context;
             _userManager = userManager;
         }
-
         // GET: PlaylistsController
         public async Task<IActionResult> Index()
         {
@@ -35,11 +38,13 @@ namespace Melodix.MVC.Controllers
         }
 
         // GET: PlaylistsController/Details/5
-        public ActionResult Details(int id)
+        
+      public async Task<IActionResult> Details(int id)
         {
-            var data = Crud <Playlist>.GetById(id);
+            var data = Crud<Playlist>.GetById(id);
             return View(data);
         }
+        
 
         // GET: PlaylistsController/Create
         public ActionResult Create()

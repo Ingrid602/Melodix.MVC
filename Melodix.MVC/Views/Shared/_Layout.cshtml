@@ -1,8 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Melodix.Modelos
 <!DOCTYPE html>
 <html lang="en">
 @inject UserManager<Melodix.Modelos.ApplicationUser> UserManager
 @inject SignInManager<Melodix.Modelos.ApplicationUser> SignInManager
+@inject Melodix.Data.Data.ApplicationDbContext _context
 
 <head>
     <meta charset="utf-8" />
@@ -116,7 +118,75 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            @RenderBody()
+            <!-- Barra lateral de playlists -->
+            <div class="bg-black text-white p-3" style="width: 230px; position: fixed; top: 0; bottom: 0; left: 0; overflow-y: auto;">
+                <h6 class="text-uppercase">Tus Playlists</h6>
+                <!--Albums-->
+                @{
+                    var usuario = await UserManager.GetUserAsync(User);
+                    var albumesGuardados = new List<Album>();
+
+                    if (usuario != null)
+                    {
+                        // Verifica si ya existe la playlist "Tus me gusta" para este usuario
+                        var tusMeGusta = _context.Playlists
+                        .FirstOrDefault(p => p.Nombre == "Tus me gusta" && p.UsuarioId == usuario.Id);
+
+                        // Si no existe, se crea automáticamente
+                        if (tusMeGusta == null)
+                        {
+                            var nueva = new Melodix.Modelos.Playlist
+                    {
+                        Nombre = "Tus me gusta",
+                        UsuarioId = usuario.Id,
+                        EsPrivada = true,
+                        ImagenUrl = "/img/playlists/TusMeGusta.jpg"
+                    };
+                            _context.Playlists.Add(nueva);
+                            _context.SaveChanges(); // No puede ser await porque es una vista razor
+                        }
+
+                        albumesGuardados = _context.Albums
+                        .Where(a => a.UsuariosQueLoGuardaron.Any(u => u.Id == usuario.Id))
+                        .ToList();
+                    }
+                }
+
+                @if (ViewBag.Playlists != null)
+                {
+                    foreach (var playlist in ViewBag.Playlists as List<Melodix.Modelos.Playlist>)
+                    {
+                         <a href="@Url.Action("Details", "Playlists", new { id = playlist.PlaylistId })" class="d-flex align-items-center gap-2 mb-3 text-white text-decoration-none">
+                            <img src="@playlist.ImagenUrl" style="width: 40px; height: 40px; object-fit: cover;" class="rounded" />
+                            <span>@playlist.Nombre</span>
+                        </a>
+                    }
+                }
+
+                <h6 class="text-uppercase mt-4">Tus Álbumes</h6>
+                @if (albumesGuardados != null && albumesGuardados.Any())
+                {
+                    foreach (var album in albumesGuardados)
+                    {
+                        <a href="@Url.Action("Details", "Albums", new { id = album.AlbumId })" class="d-flex align-items-center gap-2 mb-3 text-white text-decoration-none">
+                            <img src="@album.urlImagen" style="width: 40px; height: 40px; object-fit: cover;" class="rounded" />
+                            <span>@album.Nombre</span>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted small">No has guardado álbumes aún.</p>
+                }
+
+                <button class="btn btn-success mt-3 w-100" data-bs-toggle="modal" data-bs-target="#modalCrearPlaylist">
+                    + Crear Playlist
+                </button>
+            </div>
+
+            <div style="margin-left: 230px;">
+                @RenderBody()
+            </div>
         </main>
     </div>
 

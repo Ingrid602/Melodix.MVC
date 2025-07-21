@@ -1,4 +1,7 @@
 ﻿@model Melodix.Modelos.Album
+@using Melodix.Modelos
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Detalles del Álbum";
@@ -24,7 +27,7 @@
 }
 
 <div class="container-fluid bg-dark text-white p-4">
-    <!-- Encabezado del álbum -->
+    <!-- Encabezado del album -->
     <div class="d-flex align-items-end gap-4 mb-4">
         <img src="@Model.urlImagen" style="width: 200px; height: 200px; object-fit: cover;" class="rounded shadow" />
         <div>
@@ -33,9 +36,24 @@
             <p class="text-muted">
                 @Model.Artista?.NombreArtistico • @Model.FechaLanzamiento.Year •
                 @Model.Canciones?.Count() canción(es), @totalMinutos min @totalSegundos s
+
+                <!--Para ver si el album ya esta guardado-->
+                @{
+                    var usuarioId = UserManager.GetUserId(User);
+                    bool albumGuardado = Model.UsuariosQueLoGuardaron != null && Model.UsuariosQueLoGuardaron.Any(u => u.Id == usuarioId);
+                }
+                <!--Boton Agregar a biblioteca-->
+                <form asp-action="ToggleGuardarAlbum" asp-route-id="@Model.AlbumId" method="post">
+                    <button type="submit" class="btn btn-outline-light btn-sm">
+                        @(albumGuardado ? "Quitar de biblioteca" : "Guardar en biblioteca")
+                    </button>
+                </form>
+
             </p>
         </div>
     </div>
+
+
 
     <!-- Canciones + Reproductor lateral -->
     <div class="d-flex bg-dark text-white" style="min-height: 60vh;">
@@ -94,6 +112,42 @@
 
     </div>
 </div>
+
+<!-- Modal flotante para crear playlist -->
+<div class="modal fade" id="modalCrearPlaylist" tabindex="-1" aria-labelledby="modalCrearPlaylistLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="modalCrearPlaylistLabel">Crear nueva playlist</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/Playlists/Create" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="Nombre" class="form-label">Nombre de la playlist</label>
+                        <input type="text" class="form-control" name="Nombre" required />
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" name="EsPrivada" id="EsPrivada" />
+                        <label class="form-check-label" for="EsPrivada">¿Privada?</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Seleccionar imagen (opcional)</label>
+                        <input type="file" name="Imagen" class="form-control" accept="image/*" />
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success">Crear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <style>
     .reproductor-personalizado {
