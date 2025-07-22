@@ -38,13 +38,22 @@ namespace Melodix.MVC.Controllers
         }
 
         // GET: PlaylistsController/Details/5
-        
-      public async Task<IActionResult> Details(int id)
+
+        public IActionResult Details(int id)
         {
-            var data = Crud<Playlist>.GetById(id);
-            return View(data);
+            var playlist = _context.Playlists
+                .Include(p => p.Usuario)
+                .Include(p => p.PlaylistCanciones)
+                    .ThenInclude(pc => pc.Cancion)
+                        .ThenInclude(c => c.Artista)
+                .FirstOrDefault(p => p.PlaylistId == id);
+
+            if (playlist == null) return NotFound();
+
+            return View(playlist);
         }
-        
+
+
 
         // GET: PlaylistsController/Create
         public ActionResult Create()

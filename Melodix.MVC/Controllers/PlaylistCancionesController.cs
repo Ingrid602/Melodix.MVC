@@ -17,6 +17,35 @@ namespace Melodix.MVC.Controllers
         }
 
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Add(int CancionId, int PlaylistId)
+        {
+            // Verifica si ya existe esa relación
+            var existe = _context.PlaylistCanciones
+                .Any(pc => pc.CancionId == CancionId && pc.PlaylistId == PlaylistId);
+
+            if (existe)
+            {
+                TempData["Mensaje"] = "❌ La canción ya está en la playlist.";
+                return RedirectToAction("Index", "Canciones");
+            }
+
+            var relacion = new PlaylistCancion
+            {
+                CancionId = CancionId,
+                PlaylistId = PlaylistId,
+                Orden = 0
+            };
+
+            _context.PlaylistCanciones.Add(relacion);
+            _context.SaveChanges();
+
+            TempData["Mensaje"] = "✅ Canción agregada a la playlist.";
+            return RedirectToAction("Index", "Canciones");
+        }
+
+
 
 
         // GET: PlaylistCanciones
@@ -74,10 +103,23 @@ namespace Melodix.MVC.Controllers
         }
 
         // GET: PlaylistCanciones/Delete/5
-        public ActionResult Delete(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Remove(int PlaylistId, int CancionId)
         {
-            return View();
+            var relacion = _context.PlaylistCanciones
+                .FirstOrDefault(pc => pc.PlaylistId == PlaylistId && pc.CancionId == CancionId);
+
+            if (relacion != null)
+            {
+                _context.PlaylistCanciones.Remove(relacion);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Details", "Playlists", new { id = PlaylistId });
         }
+
+
 
         // POST: PlaylistCanciones/Delete/5
         [HttpPost]

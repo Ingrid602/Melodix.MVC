@@ -22,8 +22,52 @@ B
 <div class="d-flex bg-dark text-white" style="min-height: 100vh;">
     <!-- Cards de Canciones -->
     <div class="p-4 w-75 d-flex flex-wrap gap-4">
+        @if (TempData["Mensaje"] != null)
+        {
+            <div class="alert alert-info text-center w-100">@TempData["Mensaje"]</div>
+        }
         @foreach (var cancion in Model)
         {
+            <!-- ... dentro del foreach (var cancion in Model) ... -->
+
+            <div class="card-footer text-center bg-secondary border-0">
+                <form method="post" action="/PlaylistCanciones/Add">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="CancionId" value="@cancion.CancionId" />
+
+                    @{
+                        var showSelect = Context.Request.HasFormContentType &&
+                        Context.Request.Method == "POST" &&
+                        Context.Request.Form["CancionId"] == cancion.CancionId.ToString();
+                    }
+
+                    @if (!showSelect)
+                    {
+                        <button type="button"
+                                class="btn btn-outline-light btn-sm rounded-pill"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalAgregarAPlaylist"
+                                onclick="document.getElementById('inputCancionId').value = '@cancion.CancionId'">
+                            ➕ Agregar a playlist
+                        </button>
+
+                    }
+                    else
+                    {
+                        <select name="PlaylistId" class="form-select form-select-sm mb-2" required>
+                            @foreach (var playlist in ViewBag.Playlists)
+                            {
+                                <option value="@playlist.PlaylistId">@playlist.Nombre</option>
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-success btn-sm rounded-pill mt-1">✅ Confirmar</button>
+                    }
+                </form>
+            </div>
+
+
+
+
             <div class="card bg-secondary text-white shadow rounded-4" style="width: 200px; height:400px;">
                 <a href="@Url.Action("Index", new { id = cancion.CancionId })" style="text-decoration: none; color: inherit;">
                     <img src="@cancion.Urlimagen" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;" />
@@ -96,4 +140,34 @@ B
     </div>
 </div>
 
+<!-- Modal flotante para agregar canción a playlist -->
+<div class="modal fade" id="modalAgregarAPlaylist" tabindex="-1" aria-labelledby="modalAgregarAPlaylistLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="modalAgregarAPlaylistLabel">Agregar a Playlist</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/PlaylistCanciones/Add">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="CancionId" id="inputCancionId" />
 
+                    <div class="mb-3">
+                        <label class="form-label">Seleccionar playlist</label>
+                        <select class="form-select" name="PlaylistId" required>
+                            @foreach (var playlist in ViewBag.Playlists)
+                            {
+                                <option value="@playlist.PlaylistId">@playlist.Nombre</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success">Agregar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
