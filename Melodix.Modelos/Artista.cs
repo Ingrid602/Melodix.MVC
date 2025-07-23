@@ -8,7 +8,7 @@ namespace Melodix.Modelos
         public int ArtistaId { get; set; }
         public string NombreArtistico { get; set; }
         public string Biografia { get; set; }
-
+        public string ImagenUrl { get; set; }
         public List<Album>? Albumes { get; set; } 
         public List<SeguidoresArtistas>? Seguidores { get; set; } 
         public List<Cancion>?Canciones { get; set; } 

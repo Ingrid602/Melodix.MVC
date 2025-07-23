@@ -55,9 +55,12 @@ B
                     else
                     {
                         <select name="PlaylistId" class="form-select form-select-sm mb-2" required>
+                            @if (ViewBag.Playlists != null)
+                            {
                             @foreach (var playlist in ViewBag.Playlists)
                             {
                                 <option value="@playlist.PlaylistId">@playlist.Nombre</option>
+                            }
                             }
                         </select>
                         <button type="submit" class="btn btn-success btn-sm rounded-pill mt-1">✅ Confirmar</button>

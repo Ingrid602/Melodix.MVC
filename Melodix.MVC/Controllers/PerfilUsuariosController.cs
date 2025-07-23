@@ -18,26 +18,27 @@ namespace Melodix.MVC.Controllers
         }
 
         // GET: PerfilUsuarios
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string searchString)
         {
             var usuario = await _userManager.GetUserAsync(User);
-
-            Console.WriteLine($"🔍 ID usuario autenticado: {usuario?.Id}");
             if (usuario == null)
-            {
                 return RedirectToAction("Login", "Account");
-            }
-            Console.WriteLine($"🔍 ENDPOINT ACTUAL: {Crud<PerfilUsuario>.EndPoint}");
-            Console.WriteLine($"🔍 ID usuario autenticado: {usuario?.Id}");
 
-            var perfil = Crud<PerfilUsuario>.GetById(usuario.Id);
-            if (perfil == null)
+            var data = Crud<PerfilUsuario>.GetAll();
+            var lista = data
+       .Where(p => p.PerfilUsuarioId != usuario.Id)
+       .ToList();
+
+            if (!string.IsNullOrEmpty(searchString))
             {
-                // Redirige a crear perfil si no existe
-                return RedirectToAction(nameof(Create));
+                lista = lista
+                    .Where(p => p.Usuario != null && p.Usuario.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
             }
 
-            return View(perfil);
+            ViewBag.CurrentFilter = searchString;
+
+            return View(lista);
         }
 
         // GET: PerfilUsuarios/Details/5
@@ -155,7 +156,8 @@ namespace Melodix.MVC.Controllers
 
 
                 Crud<PerfilUsuario>.Update(id, perfilExistente); // Usamos el Update con string
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = perfilExistente.PerfilUsuarioId });
+
             }
             catch (Exception ex)
             {

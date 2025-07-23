@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Melodix.Data.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class IngridMigracion : Migration
+    public partial class IngridApp : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,8 @@ namespace Melodix.Data.Data.Migrations
                     ArtistaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NombreArtistico = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Biografia = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Biografia = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImagenUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

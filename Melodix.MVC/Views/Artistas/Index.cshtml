@@ -4,38 +4,19 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container mt-4">
+    <h2 class="text-white mb-4">Artistas</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NombreArtistico)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Biografia)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NombreArtistico)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Biografia)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ArtistaId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ArtistaId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ArtistaId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="d-flex flex-wrap gap-4">
+        @foreach (var artista in Model)
+        {
+            <div class="text-center" style="width: 150px;">
+                <a asp-action="Details" asp-route-id="@artista.ArtistaId" class="text-decoration-none text-white">
+                    <img src="@artista.ImagenUrl" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="@artista.NombreArtistico" />
+                    <div class="mt-2 fw-bold">@artista.NombreArtistico</div>
+                    <small class="text-muted">Artista</small>
+                </a>
+            </div>
+        }
+    </div>
+</div>

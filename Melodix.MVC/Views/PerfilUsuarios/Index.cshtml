@@ -1,130 +1,63 @@
-﻿@model Melodix.Modelos.PerfilUsuario
+﻿@model IEnumerable<Melodix.Modelos.PerfilUsuario>
+
 @{
     ViewData["Title"] = "Mi Perfil";
 }
 
 <style>
-    .perfil-encabezado {
-        height: 400px;
-        background: linear-gradient(180deg, #444 0%, #121212 100%);
-        padding: 40px 60px;
-        border-radius: 12px;
-    }
-
-    .perfil-foto {
+    .perfil-card {
+        background-color: #1e1e1e;
+        border-radius: 50%;
         width: 180px;
         height: 180px;
-        object-fit: cover;
-        border: 4px solid #121212;
+        overflow: hidden;
+        border: 3px solid #444;
+        margin-bottom: 10px;
     }
 
-    .perfil-label {
-        font-size: 15px;
-        color: #ccc;
-    }
+        .perfil-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
     .perfil-nombre {
-        font-size: 90px;
-        font-weight: bold;
         color: white;
-    }
-
-    .perfil-bio {
-        color: #ccc;
-    }
-
-    .perfil-detalles {
-        color: black;
-        margin-top: 1.5rem;
-        padding-left: 3rem;
-        padding-right: 3rem;
-    }
-
-    .boton-editar {
-        background-color: #f0f0f0;
-        color: black;
+        font-size: 18px;
         font-weight: bold;
-        border-radius: 25px;
-        padding: 10px 24px;
+        text-align: center;
     }
 
-    .modal-foto {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
+    .perfil-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .perfil-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+    }
+
+    .perfil-item {
+        text-align: center;
+        width: 180px;
     }
 </style>
 
-<!-- Fondo estilo Spotify -->
-<div class="d-flex flex-column align-items-start justify-content-end text-white perfil-encabezado">
-    <div class="d-flex align-items-center">
-        <img src="@Model.FotoUrl"
-             alt="Foto de perfil"
-             class="rounded-circle me-4 perfil-foto" />
-        <div>
-            <span class="perfil-label">Perfil</span>
-            <h1 class="perfil-nombre">@Model.Usuario?.Nombre</h1>
-            <p class="perfil-bio">@Model.Bio</p>
-            <p><strong>País:</strong> @Model.Pais</p>
-            <p><strong>Fecha de nacimiento:</strong> @Model.FechaNacimiento.ToString("dd/MM/yyyy")</p>
+<h2 class="text-white text-center mb-4">Explorar Perfiles</h2>
+
+<div class="perfil-container">
+    @foreach (var perfil in Model)
+    {
+        <div class="perfil-item">
+            <a asp-action="Details" asp-route-id="@perfil.PerfilUsuarioId" class="perfil-link">
+                <div class="perfil-card">
+                    <img src="@perfil.FotoUrl" alt="Foto de @perfil.Usuario?.Nombre" />
+                </div>
+                <div class="perfil-nombre">@perfil.Usuario?.Nombre</div>
+            </a>
         </div>
-    </div>
-</div>
-
-
-
-    
-
-    <!-- Botón para abrir el modal -->
-    <button class="btn mt-3 boton-editar"
-            data-bs-toggle="modal"
-            data-bs-target="#editarModal">
-        Editar perfil
-    </button>
-
-
-<!-- Modal de edición -->
-<div class="modal fade" id="editarModal" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white rounded-4">
-            <div class="modal-header border-0">
-                <h5 class="modal-title fs-4" id="editarModalLabel">Detalles del perfil</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <form asp-action="Edit" asp-route-id="@Model.PerfilUsuarioId" method="post" enctype="multipart/form-data">
-                    <input type="hidden" asp-for="PerfilUsuarioId" />
-
-                    <div class="text-center mb-4">
-                        <img src="@Model.FotoUrl" class="rounded-circle modal-foto" />
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="Bio" class="form-control bg-dark text-white border-secondary" placeholder="Bio" />
-                        <label asp-for="Bio" class="text-muted">Biografía</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="FechaNacimiento" type="date" class="form-control bg-dark text-white border-secondary" placeholder="Fecha de nacimiento" />
-                        <label asp-for="FechaNacimiento" class="text-muted">Fecha de nacimiento</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="Pais" class="form-control bg-dark text-white border-secondary" placeholder="País" />
-                        <label asp-for="Pais" class="text-muted">País</label>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Nueva foto</label>
-                        <input type="file" name="nuevaFoto" class="form-control" />
-                    </div>
-
-                    <div class="d-flex justify-content-end gap-2 mt-3">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-success">Guardar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    }
 </div>

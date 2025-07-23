@@ -8,16 +8,24 @@ namespace Melodix.MVC.Controllers
     public class ArtistasController : Controller
     {
         // GET: ArtistasController
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
-            var data = Crud <Artista>.GetAll();
+            var data = Crud<Artista>.GetAll();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                data = data
+                    .Where(a => a.NombreArtistico.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            ViewBag.CurrentFilter = searchString;
             return View(data);
         }
 
         // GET: ArtistasController/Details/5
         public ActionResult Details(int id)
         {
-            var data = Crud <Artista>.GetById(id);
+            var data = Crud<Artista>.GetById(id);
             return View(data);
         }
 

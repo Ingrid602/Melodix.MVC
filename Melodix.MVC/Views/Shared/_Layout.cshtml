@@ -77,7 +77,7 @@
                                     <img src="@foto" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;" alt="Perfil" />
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perfilDropdown">
-                                    <li><a class="dropdown-item" asp-controller="PerfilUsuarios" asp-action="Index">Ver perfil</a></li>
+                                    <li><a class="dropdown-item" asp-controller="PerfilUsuarios" asp-action="Details" asp-route-id="@user.Id">Ver perfil</a></li>
                                     <li>
                                         <form asp-area="Identity"
                                               asp-page="/Account/Logout"
@@ -105,12 +105,28 @@
                     }
 
                     <form asp-action="Index" method="get" class="mb-4">
-                        <div class="d-flex flex-wrap align-items-center gap-2">
-                            <input type="text" name="searchString" value="@ViewBag.CurrentFilter" placeholder="Buscar álbum o artista..." class="form-control w-auto" />
-                            <button type="submit" class="btn btn-success">Buscar</button>
-                            <a asp-action="Index" class="btn btn-outline-secondary">Mostrar todos</a>
+                        <div class="d-flex flex-column gap-2">
+
+                            <!-- Fila de input y botones -->
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <input type="text" name="searchString" value="@ViewBag.CurrentFilter" placeholder="Buscar álbum, artista, perfil..." class="form-control w-auto" />
+                                <button type="submit" class="btn btn-success">Buscar</button>
+                                <a asp-action="Index" class="btn btn-outline-secondary">Mostrar todos</a>
+                            </div>
+
+                            <!-- Solo muestra si hay texto -->
+                            @if (!string.IsNullOrWhiteSpace(ViewBag.CurrentFilter as string))
+                            {
+                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                    <a class="btn btn-outline-light" asp-controller="Canciones" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter">Canciones</a>
+                                    <a class="btn btn-outline-light" asp-controller="Albums" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter">Álbumes</a>
+                                    <a class="btn btn-outline-light" asp-controller="Artistas" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter">Artistas</a>
+                                    <a class="btn btn-outline-light" asp-controller="PerfilUsuarios" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter">Perfiles</a>
+                                </div>
+                            }
                         </div>
                     </form>
+
 
                 </div>
             </div>

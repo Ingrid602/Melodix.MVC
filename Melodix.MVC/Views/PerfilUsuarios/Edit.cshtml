@@ -1,1 +1,35 @@
-﻿
+﻿@model Melodix.Modelos.PerfilUsuario
+
+@{
+    ViewData["Title"] = "Editar perfil";
+}
+
+<div class="container text-white mt-5">
+    <h2>Editar perfil</h2>
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="PerfilUsuarioId" />
+
+        <div class="mb-3">
+            <label asp-for="Bio" class="form-label">Biografía</label>
+            <input asp-for="Bio" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="FechaNacimiento" class="form-label">Fecha de nacimiento</label>
+            <input asp-for="FechaNacimiento" type="date" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Pais" class="form-label">País</label>
+            <input asp-for="Pais" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Nueva foto</label>
+            <input type="file" name="nuevaFoto" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+</div>
