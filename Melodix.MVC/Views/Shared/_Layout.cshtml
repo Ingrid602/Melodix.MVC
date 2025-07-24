@@ -118,10 +118,17 @@
                             @if (!string.IsNullOrWhiteSpace(ViewBag.CurrentFilter as string))
                             {
                                 <div class="d-flex flex-wrap gap-2 mt-2">
-                                    <a class="btn btn-outline-light" asp-controller="Canciones" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter">Canciones</a>
-                                    <a class="btn btn-outline-light" asp-controller="Albums" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter">Álbumes</a>
-                                    <a class="btn btn-outline-light" asp-controller="Artistas" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter">Artistas</a>
-                                    <a class="btn btn-outline-light" asp-controller="PerfilUsuarios" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter">Perfiles</a>
+                                    <a class="btn" asp-controller="Canciones" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
+                                       style="border: 1px solid #ff4da6; color: #ff4da6;">Canciones</a>
+
+                                    <a class="btn" asp-controller="Albums" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
+                                       style="border: 1px solid #ff4da6; color: #ff4da6;">Álbumes</a>
+
+                                    <a class="btn" asp-controller="Artistas" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
+                                       style="border: 1px solid #ff4da6; color: #ff4da6;">Artistas</a>
+
+                                    <a class="btn" asp-controller="PerfilUsuarios" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
+                                       style="border: 1px solid #ff4da6; color: #ff4da6;">Perfiles</a>
                                 </div>
                             }
                         </div>

@@ -51,13 +51,16 @@
 <div class="perfil-container">
     @foreach (var perfil in Model)
     {
-        <div class="perfil-item">
-            <a asp-action="Details" asp-route-id="@perfil.PerfilUsuarioId" class="perfil-link">
-                <div class="perfil-card">
-                    <img src="@perfil.FotoUrl" alt="Foto de @perfil.Usuario?.Nombre" />
-                </div>
-                <div class="perfil-nombre">@perfil.Usuario?.Nombre</div>
-            </a>
-        </div>
+        if (perfil.Usuario != null)
+        {
+            <div class="text-center">
+                <a asp-action="Details" asp-route-id="@perfil.PerfilUsuarioId" style="text-decoration: none; color: inherit;">
+                    <img src="@perfil.FotoUrl" class="rounded-circle" style="width: 150px;" />
+                    <h5>@perfil.Usuario.Nombre</h5>
+                    <p>Perfil</p>
+                </a>
+            </div>
+        }
     }
+
 </div>

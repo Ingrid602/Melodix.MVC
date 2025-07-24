@@ -35,3 +35,34 @@
         <p>@Model.Biografia</p>
     </div>
 </div>
+<!--Tabla de albumes que le corresponden a un artista-->
+<h3 class="text-white mt-5">Álbumes</h3>
+<table class="table table-borderless text-white">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Título</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var album in Model.Albumes)
+        {
+            <tr>
+                <td style="width: 70px;">
+                    <a href="@Url.Action("Details", "Albums", new { id = album.AlbumId })">
+                        <img src="@album.urlImagen" style="width: 60px; height: 60px; object-fit: cover;" />
+                    </a>
+
+                </td>
+                <td>
+                    <a href="@Url.Action("Details", "Albums", new { id = album.AlbumId })" style="color: white; text-decoration: none;">
+                        <strong>@album.Nombre</strong>
+                    </a>
+
+                </td>
+                <td>@album.FechaLanzamiento.ToString("yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

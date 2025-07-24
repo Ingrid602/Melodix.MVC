@@ -7,53 +7,53 @@
 
 <style>
     .perfil-encabezado {
-        height: 400px;
-        background: linear-gradient(180deg, #444 0%, #121212 100%);
-        padding: 40px 60px;
-        border-radius: 12px;
+    height: 400px;
+    background: linear-gradient(180deg, #444 0%, #121212 100%);
+    padding: 40px 60px;
+    border-radius: 12px;
     }
 
     .perfil-foto {
-        width: 180px;
-        height: 180px;
-        object-fit: cover;
-        border: 4px solid #121212;
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border: 4px solid #121212;
     }
 
     .perfil-label {
-        font-size: 15px;
-        color: #ccc;
+    font-size: 15px;
+    color: #ccc;
     }
 
     .perfil-nombre {
-        font-size: 90px;
-        font-weight: bold;
-        color: white;
+    font-size: 90px;
+    font-weight: bold;
+    color: white;
     }
 
     .perfil-bio {
-        color: #ccc;
+    color: #ccc;
     }
 
     .perfil-detalles {
-        color: black;
-        margin-top: 1.5rem;
-        padding-left: 3rem;
-        padding-right: 3rem;
+    color: black;
+    margin-top: 1.5rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
     }
 
     .boton-editar {
-        background-color: #f0f0f0;
-        color: black;
-        font-weight: bold;
-        border-radius: 25px;
-        padding: 10px 24px;
+    background-color: #f0f0f0;
+    color: black;
+    font-weight: bold;
+    border-radius: 25px;
+    padding: 10px 24px;
     }
 
     .modal-foto {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
     }
 </style>
 
@@ -61,8 +61,8 @@
 <div class="d-flex flex-column align-items-start justify-content-end text-white perfil-encabezado">
     <div class="d-flex align-items-center">
         <img src="@Model.FotoUrl"
-             alt="Foto de perfil"
-             class="rounded-circle me-4 perfil-foto" />
+        alt="Foto de perfil"
+        class="rounded-circle me-4 perfil-foto" />
         <div>
             <span class="perfil-label">Perfil</span>
             <h1 class="perfil-nombre">@Model.Usuario?.Nombre</h1>
@@ -78,11 +78,14 @@
 
 
 <!-- Botón para abrir el modal -->
-<button class="btn mt-3 boton-editar"
-        data-bs-toggle="modal"
-        data-bs-target="#editarModal">
-    Editar perfil
-</button>
+@if (ViewBag.EsMiPerfil == true)
+{
+    <button class="btn mt-3 boton-editar"
+    data-bs-toggle="modal"
+    data-bs-target="#editarModal">
+        Editar perfil
+    </button>
+}
 
 
 <!-- Modal de edición -->
@@ -130,3 +133,32 @@
         </div>
     </div>
 </div>
+<!--Mostrar playlist en perfil-->
+<hr class="my-5 text-white" />
+
+<h3 class="text-white">Playlists públicas</h3>
+
+@if (Model.Usuario?.Playlists != null && Model.Usuario.Playlists.Any(p => !p.EsPrivada))
+{
+    <div class="row">
+        @foreach (var playlist in Model.Usuario.Playlists.Where(p => !p.EsPrivada))
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card bg-dark text-white shadow-sm border-secondary">
+                    <img src="@playlist.ImagenUrl" class="card-img-top" style="height: 180px; object-fit: cover;" />
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@playlist.Nombre</h5>
+                        <a asp-controller="Playlists" asp-action="Details" asp-route-id="@playlist.PlaylistId" class="btn btn-outline-light btn-sm mt-2">
+                            Ver playlist
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p class="text-muted">Este usuario no tiene playlists públicas.</p>
+}
+

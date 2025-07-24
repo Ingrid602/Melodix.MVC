@@ -1,8 +1,10 @@
 ﻿using Melodix.APIConsumer;
+using Melodix.Data.Data;
 using Melodix.Modelos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Melodix.MVC.Controllers
@@ -11,9 +13,10 @@ namespace Melodix.MVC.Controllers
     {
 
         private readonly UserManager<ApplicationUser> _userManager;
-
-        public PerfilUsuariosController(UserManager<ApplicationUser> userManager)
+        private readonly ApplicationDbContext _context;
+        public PerfilUsuariosController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
+            _context = context;
             _userManager = userManager;
         }
 
@@ -24,11 +27,10 @@ namespace Melodix.MVC.Controllers
             if (usuario == null)
                 return RedirectToAction("Login", "Account");
 
-            var data = Crud<PerfilUsuario>.GetAll();
-            var lista = data
-       .Where(p => p.PerfilUsuarioId != usuario.Id)
-       .ToList();
-
+            var lista = _context.PerfilUsuarios
+          .Include(p => p.Usuario)
+          .Where(p => p.PerfilUsuarioId != usuario.Id)
+          .ToList();
             if (!string.IsNullOrEmpty(searchString))
             {
                 lista = lista
@@ -42,9 +44,25 @@ namespace Melodix.MVC.Controllers
         }
 
         // GET: PerfilUsuarios/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
-            var data = Crud<PerfilUsuario>.GetById(id);
+            var data = _context.PerfilUsuarios
+         .Include(p => p.Usuario)
+        .FirstOrDefault(p => p.PerfilUsuarioId == id);
+
+            if (data == null)
+                return NotFound();
+
+            //Obtener solo las playlist publicas
+            var playlistsPublicas = _context.Playlists
+       .Where(pl => pl.UsuarioId == id && pl.EsPrivada == false)
+       .ToList();
+
+            ViewBag.PlaylistsPublicas = playlistsPublicas;
+
+            var usuarioActual = await _userManager.GetUserAsync(User);
+            ViewBag.EsMiPerfil = (usuarioActual?.Id == id);
+
             return View(data);
         }
 

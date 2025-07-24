@@ -42,19 +42,20 @@
 
         <div style="display: flex; align-items: center;">
             <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Usuario" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;" />
-            <span>@User.Identity.Name</span>
+            <span>@Model.Usuario?.UserName</span>
         </div>
     </div>
 
     
 
     <!-- Botón para abrir el modal de edición -->
+    @if (Model.Usuario?.UserName == User.Identity?.Name){
     <div class="mt-4">
         <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#modalEditarPlaylist">
             Editar playlist
         </button>
     </div>
-   
+    }
 
     <!-- Modal para editar playlist -->
     <div class="modal fade" id="modalEditarPlaylist" tabindex="-1" aria-labelledby="modalEditarPlaylistLabel" aria-hidden="true">

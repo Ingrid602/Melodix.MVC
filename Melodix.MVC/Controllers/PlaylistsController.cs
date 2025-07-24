@@ -107,7 +107,7 @@ namespace Melodix.MVC.Controllers
 
                 // Este objeto sí tendrá el PlaylistId asignado por la API
                 var nuevaPlaylist = Crud<Playlist>.Create(data);
-
+               
                 // redirigir correctamente a Details
                 return RedirectToAction("Details", new { id = nuevaPlaylist.PlaylistId });
 

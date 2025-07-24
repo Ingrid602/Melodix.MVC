@@ -1,12 +1,22 @@
 ﻿using Melodix.APIConsumer;
+using Melodix.Data.Data;
 using Melodix.Modelos;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Melodix.MVC.Controllers
 {
     public class ArtistasController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public ArtistasController(ApplicationDbContext context)
+        {
+            _context = context;
+            
+        }
         // GET: ArtistasController
         public ActionResult Index(string searchString)
         {
@@ -25,8 +35,13 @@ namespace Melodix.MVC.Controllers
         // GET: ArtistasController/Details/5
         public ActionResult Details(int id)
         {
-            var data = Crud<Artista>.GetById(id);
-            return View(data);
+            var artista = _context.Artistas
+         .Include(a => a.Albumes)
+         .FirstOrDefault(a => a.ArtistaId == id);
+
+            if (artista == null) return NotFound();
+
+            return View(artista);
         }
 
         // GET: ArtistasController/Create
