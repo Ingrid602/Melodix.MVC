@@ -48,6 +48,7 @@ namespace Melodix.MVC.Controllers
         {
             var data = _context.PerfilUsuarios
          .Include(p => p.Usuario)
+        
         .FirstOrDefault(p => p.PerfilUsuarioId == id);
 
             if (data == null)
@@ -58,10 +59,43 @@ namespace Melodix.MVC.Controllers
        .Where(pl => pl.UsuarioId == id && pl.EsPrivada == false)
        .ToList();
 
+            //Obtener artistas que sigue este usuario
+            var artistasSeguidos = _context.SeguidoresArtistas
+        .Where(s => s.UsuarioId == id)
+        .Select(s => s.Artista)
+        .ToList();
+
+            //Obtener usuarios seguidos
+            var seguidos = _context.SeguidoresUsuarios
+          .Include(s => s.Seguido)
+              .ThenInclude(u => u.Perfil)
+          .Where(s => s.SeguidorId == id)
+          .Select(s => s.Seguido)
+          .ToList();
+
+            //Obtener usuarios que siguen el perfil
+
+            var seguidores = _context.SeguidoresUsuarios
+    .Include(s => s.Seguidor)
+        .ThenInclude(u => u.Perfil)
+    .Where(s => s.SeguidoId == id)
+    .Select(s => s.Seguidor)
+    .ToList();
+
+
             ViewBag.PlaylistsPublicas = playlistsPublicas;
+            ViewBag.ArtistasSeguidos = artistasSeguidos;
+            ViewBag.UsuariosSeguidos = seguidos;
+            ViewBag.Seguidores = seguidores;
 
             var usuarioActual = await _userManager.GetUserAsync(User);
             ViewBag.EsMiPerfil = (usuarioActual?.Id == id);
+
+            // Verificar si el usuario sigue el perfil
+            bool yaSigue = _context.SeguidoresUsuarios.Any(s =>
+                s.SeguidorId == usuarioActual.Id && s.SeguidoId == id);
+
+            ViewBag.YaSigueEstePerfil = yaSigue;
 
             return View(data);
         }
@@ -184,12 +218,43 @@ namespace Melodix.MVC.Controllers
             }
         }
 
+        //Metodo Seguir un perfil de otro usuario
+
+        [HttpPost]
+        public IActionResult SeguirPerfil(string usuarioId, string seguidoId)
+        {
+            var lista = Crud<SeguidoresUsuarios>.GetAll();
+
+            var yaSigue = lista.Any(s => s.SeguidorId == usuarioId && s.SeguidoId == seguidoId);
+
+            if (yaSigue)
+            {
+                Crud<SeguidoresUsuarios>.Delete(usuarioId, seguidoId);
+            }
+            else
+            {
+                var nuevo = new SeguidoresUsuarios
+                {
+                    SeguidorId = usuarioId,
+                    SeguidoId = seguidoId,
+                    Fecha = DateTime.Now
+                };
+                Crud<SeguidoresUsuarios>.Create(nuevo);
+            }
+
+            return RedirectToAction("Details", new { id = seguidoId });
+        }
+
+
+
+
+
         // GET: PerfilUsuarios/Delete/5
         //public ActionResult Delete(int id)
         //{
         //    var data = Crud<PerfilUsuario>.GetById(id);
         //    return View(data);
-            
+
         //}
 
         //// POST: PerfilUsuarios/Delete/5

@@ -1,7 +1,12 @@
-﻿@model Melodix.Modelos.PerfilUsuario
+﻿@using Melodix.Modelos
+@model Melodix.Modelos.PerfilUsuario
 
 @{
     ViewData["Title"] = "Details";
+    var yaSigue = ViewBag.YaSigueEstePerfil as bool? ?? false;
+    var esMiPerfil = ViewBag.EsMiPerfil as bool? ?? false;
+    var usuarioId = User?.FindFirst("sub")?.Value ??
+                    User?.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
 }
 
 
@@ -133,6 +138,19 @@
         </div>
     </div>
 </div>
+<!--Boton para seguir un perfil de otro usuario-->
+@if (!esMiPerfil)
+{
+    <form method="post" asp-controller="PerfilUsuarios" asp-action="SeguirPerfil">
+        <input type="hidden" name="usuarioId" value="@usuarioId" />
+
+        <input type="hidden" name="seguidoId" value="@Model.PerfilUsuarioId" />
+
+        <button type="submit" class="btn @(yaSigue ? "btn-danger" : "btn-primary")">
+            @(yaSigue ? "Dejar de seguir" : "Seguir perfil")
+        </button>
+    </form>
+}
 <!--Mostrar playlist en perfil-->
 <hr class="my-5 text-white" />
 
@@ -160,5 +178,72 @@
 else
 {
     <p class="text-muted">Este usuario no tiene playlists públicas.</p>
+}
+
+<!--Mostrar artistas seguidos-->
+@if (ViewBag.ArtistasSeguidos != null && ((List<Artista>)ViewBag.ArtistasSeguidos).Any())
+{
+    <h4 class="mt-4">Artistas que sigue</h4>
+    <div class="d-flex flex-wrap gap-4">
+        @foreach (var artista in (List<Artista>)ViewBag.ArtistasSeguidos)
+        {
+            <div class="card text-center" style="width: 150px;">
+                <a asp-controller="Artistas" asp-action="Details" asp-route-id="@artista.ArtistaId">
+                    <img src="@artista.ImagenUrl" class="card-img-top rounded-circle p-2" alt="Foto" />
+                </a>
+                <div class="card-body">
+                    <p class="card-text fw-bold">@artista.NombreArtistico</p>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!--Mostrar Usuarios seguidos-->
+@if (ViewBag.UsuariosSeguidos != null && ((List<ApplicationUser>)ViewBag.UsuariosSeguidos).Any())
+{
+    <h4 class="mt-4">Usuarios que sigue</h4>
+    <div class="d-flex flex-wrap gap-3">
+        @foreach (var seguido in (List<ApplicationUser>)ViewBag.UsuariosSeguidos)
+        {
+            var perfil = seguido.Perfil;
+            if (perfil != null)
+            {
+                <a asp-controller="PerfilUsuarios" asp-action="Details" asp-route-id="@seguido.Id" class="text-decoration-none text-white text-center">
+                    <div style="width: 140px;">
+                        <img src="@perfil.FotoUrl" class="rounded-circle mb-2" style="width: 120px;" />
+                        <p>@seguido.UserName</p>
+                    </div>
+                </a>
+            }
+        }
+    </div>
+}
+else
+{
+    <p class="text-muted">No sigue a ningún usuario.</p>
+}
+
+<!--Mmosrar usuarios que me siguen-->
+<h4>Seguidores</h4>
+@if (ViewBag.Seguidores != null && ((List<ApplicationUser>)ViewBag.Seguidores).Any())
+{
+    <div class="d-flex flex-wrap gap-3">
+        @foreach (var user in (List<ApplicationUser>)ViewBag.Seguidores)
+        {
+            <a asp-controller="PerfilUsuarios" asp-action="Details" asp-route-id="@user.Id" class="text-decoration-none text-light">
+                <div class="card text-center p-2" style="width: 120px;">
+                    <img src="@user.Perfil?.FotoUrl" class="rounded-circle mx-auto" style="width: 70px; height: 70px;" />
+                    <div class="mt-2" style="color: black;">@user.Nombre</div>
+
+
+                </div>
+            </a>
+        }
+    </div>
+}
+else
+{
+    <p class="text-muted">Este perfil aún no tiene seguidores.</p>
 }
 

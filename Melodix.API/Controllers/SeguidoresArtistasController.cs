@@ -60,7 +60,7 @@ namespace Melodix.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SeguidoresArtistasExists(id))
+                if (!SeguidoresArtistasExists(seguidoresArtistas.UsuarioId, seguidoresArtistas.ArtistaId))
                 {
                     return NotFound();
                 }
@@ -85,7 +85,8 @@ namespace Melodix.API.Controllers
             }
             catch (DbUpdateException)
             {
-                if (SeguidoresArtistasExists(seguidoresArtistas.UsuarioId))
+                 if (SeguidoresArtistasExists(seguidoresArtistas.UsuarioId, seguidoresArtistas.ArtistaId)
+)
                 {
                     return Conflict();
                 }
@@ -99,10 +100,12 @@ namespace Melodix.API.Controllers
         }
 
         // DELETE: api/SeguidoresArtistas/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSeguidoresArtistas(string id)
+        [HttpDelete("{usuarioId}/{artistaId}")]
+        public async Task<IActionResult> DeleteSeguidoresArtistas(string usuarioId,int artistaId)
         {
-            var seguidoresArtistas = await _context.SeguidoresArtistas.FindAsync(id);
+            var seguidoresArtistas = await _context.SeguidoresArtistas
+      .FirstOrDefaultAsync(s => s.UsuarioId == usuarioId && s.ArtistaId == artistaId);
+
             if (seguidoresArtistas == null)
             {
                 return NotFound();
@@ -114,9 +117,10 @@ namespace Melodix.API.Controllers
             return NoContent();
         }
 
-        private bool SeguidoresArtistasExists(string id)
+        private bool SeguidoresArtistasExists(string usuarioId, int artistaId)
         {
-            return _context.SeguidoresArtistas.Any(e => e.UsuarioId == id);
+            return _context.SeguidoresArtistas.Any(e => e.UsuarioId == usuarioId && e.ArtistaId == artistaId);
         }
+
     }
 }

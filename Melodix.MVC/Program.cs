@@ -20,6 +20,8 @@ namespace Melodix.MVC
             Crud<Playlist>.EndPoint = "https://localhost:7093/api/Playlists";
             Crud<Cancion>.EndPoint = "https://localhost:7093/api/Canciones";
             Crud<Artista>.EndPoint = "https://localhost:7093/api/Artistas";
+            Crud<SeguidoresArtistas>.EndPoint = "https://localhost:7093/api/SeguidoresArtistas";
+            Crud<SeguidoresUsuarios>.EndPoint = "https://localhost:7093/api/SeguidoresUsuarios";
 
             var builder = WebApplication.CreateBuilder(args);
 

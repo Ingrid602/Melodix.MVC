@@ -99,16 +99,16 @@ namespace Melodix.API.Controllers
         }
 
         // DELETE: api/SeguidoresUsuarios/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSeguidoresUsuarios(string id)
+        [HttpDelete("{seguidorId}/{seguidoId}")]
+        public async Task<IActionResult> DeleteSeguidoresUsuarios(string seguidorId, string seguidoId)
         {
-            var seguidoresUsuarios = await _context.SeguidoresUsuarios.FindAsync(id);
-            if (seguidoresUsuarios == null)
-            {
-                return NotFound();
-            }
+            var relacion = await _context.SeguidoresUsuarios
+                .FirstOrDefaultAsync(s => s.SeguidorId == seguidorId && s.SeguidoId == seguidoId);
 
-            _context.SeguidoresUsuarios.Remove(seguidoresUsuarios);
+            if (relacion == null)
+                return NotFound();
+
+            _context.SeguidoresUsuarios.Remove(relacion);
             await _context.SaveChangesAsync();
 
             return NoContent();

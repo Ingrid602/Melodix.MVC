@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Details";
+    var userId = User?.FindFirst("sub")?.Value ?? User?.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+    bool yaSigue = Model.Seguidores?.Any(s => s.UsuarioId == userId) == true;
 }
 <div class="container-fluid p-0">
     <!-- Header grande del artista -->
@@ -35,6 +37,18 @@
         <p>@Model.Biografia</p>
     </div>
 </div>
+
+<!--Boton Seguir-->
+
+<form method="post" asp-controller="Artistas" asp-action="SeguirArtista">
+    <input type="hidden" name="usuarioId" value="@userId" />
+    <input type="hidden" name="artistaId" value="@Model.ArtistaId" />
+
+    <button type="submit" class="btn @(yaSigue ? "btn-danger" : "btn-primary")">
+        @(yaSigue ? "Dejar de seguir" : "Seguir artista")
+    </button>
+</form>
+
 <!--Tabla de albumes que le corresponden a un artista-->
 <h3 class="text-white mt-5">Álbumes</h3>
 <table class="table table-borderless text-white">

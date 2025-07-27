@@ -146,5 +146,21 @@ namespace Melodix.APIConsumer
             }
         }
 
+        //Sobrecarga para el modulo seguidor y seguido de perfiles usuarios 
+        public static void Delete(string seguidorId, string seguidoId)
+        {
+            using (var client = new HttpClient())
+            {
+                var url = $"{EndPoint}/{seguidorId}/{seguidoId}";
+                var response = client.DeleteAsync(url).Result;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Error al eliminar: {response.StatusCode}");
+                }
+            }
+        }
+
+
     }
 }
