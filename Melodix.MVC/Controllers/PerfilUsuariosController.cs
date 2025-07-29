@@ -76,11 +76,11 @@ namespace Melodix.MVC.Controllers
             //Obtener usuarios que siguen el perfil
 
             var seguidores = _context.SeguidoresUsuarios
-    .Include(s => s.Seguidor)
-        .ThenInclude(u => u.Perfil)
-    .Where(s => s.SeguidoId == id)
-    .Select(s => s.Seguidor)
-    .ToList();
+            .Include(s => s.Seguidor)
+             .ThenInclude(u => u.Perfil)
+                .Where(s => s.SeguidoId == id)
+                    .Select(s => s.Seguidor)
+                        .ToList();
 
 
             ViewBag.PlaylistsPublicas = playlistsPublicas;
@@ -91,11 +91,32 @@ namespace Melodix.MVC.Controllers
             var usuarioActual = await _userManager.GetUserAsync(User);
             ViewBag.EsMiPerfil = (usuarioActual?.Id == id);
 
+            // Solo si es su propio perfil, evaluamos si mostrar el botón
+            if (usuarioActual?.Id == id)
+            {
+                var yaEsArtista = _context.Artistas.Any(a => a.UsuarioId == id);
+
+                var tieneSolicitudPendiente = _context.SolicitudesMusico.Any(s =>
+                    s.UsuarioId == id &&
+                    (s.Estado == EstadoSolicitud.Pendiente || s.Estado == EstadoSolicitud.Aprobada)
+                );
+
+                ViewBag.MostrarBotonConvertirse = !yaEsArtista && !tieneSolicitudPendiente;
+            }
+            else
+            {
+                ViewBag.MostrarBotonConvertirse = false;
+            }
+
+
             // Verificar si el usuario sigue el perfil
             bool yaSigue = _context.SeguidoresUsuarios.Any(s =>
                 s.SeguidorId == usuarioActual.Id && s.SeguidoId == id);
 
             ViewBag.YaSigueEstePerfil = yaSigue;
+          
+           
+
 
             return View(data);
         }
@@ -244,9 +265,6 @@ namespace Melodix.MVC.Controllers
 
             return RedirectToAction("Details", new { id = seguidoId });
         }
-
-
-
 
 
         // GET: PerfilUsuarios/Delete/5

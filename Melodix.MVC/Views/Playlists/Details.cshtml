@@ -1,5 +1,9 @@
 ﻿@model Melodix.Modelos.Playlist       
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/reproductor.css" />
+}
+
 
 @{
     ViewData["Title"] = "Details";
@@ -150,109 +154,91 @@
         }
     </div>
 
-    <!-- Panel lateral -->
+    <!-- Panel lateral con reproductor personalizado -->
     <div class="bg-black p-4 shadow-lg" style="border-left: 1px solid #333; width: 380px;">
         @if (cancionSeleccionada != null)
         {
-            <img id="song-img" src="@cancionSeleccionada.Urlimagen" class="img-fluid rounded mb-3" style="object-fit: cover;" />
-
+            <img id="cover-image" src="@cancionSeleccionada.Urlimagen" class="img-fluid rounded mb-3" />
             <h5 id="song-name" class="fw-bold">@cancionSeleccionada.Nombre</h5>
             <p><strong>Artista:</strong> <span id="song-artist">@cancionSeleccionada.Artista?.NombreArtistico</span></p>
             <p><strong>Género:</strong> <span id="song-genre">@cancionSeleccionada.Genero</span></p>
-            <p><strong>Duración:</strong> <span id="song-duration">@cancionSeleccionada.Duracion</span></p>
+            <p><strong>Duración:</strong> @cancionSeleccionada.Duracion</p>
 
-            <div class="reproductor-personalizado">
-                <button id="prev-btn" class="repro-boton" title="Anterior">⏮</button>
+            <div class="custom-player">
+                <div class="controls-row">
+                    <button id="prev-btn" class="repro-btn">⏮</button>
+                    <button id="play-pause-btn" class="repro-btn">▶️</button>
+                    <button id="next-btn" class="repro-btn">⏭</button>
+                </div>
 
-                <audio id="song-player" controls class="w-100 audio-estilizado" style="height: 46px;">
+                <div class="time-row">
+                    <span id="current-time">0:00</span>
+                    <input type="range" id="progress-bar" value="0" min="0" step="1">
+                    <span id="total-time">0:00</span>
+                </div>
+
+                <div class="volume-row">
+                    <label for="volume-bar">🔊</label>
+                    <input type="range" id="volume-bar" min="0" max="1" step="0.01" value="1">
+                </div>
+
+                @if (ViewBag.EsPremium == true)
+                {
+                    <a id="download-link" class="btn btn-success mt-2" download>Descargar</a>
+                }
+                else
+                {
+                    <button class="btn btn-secondary mt-2" disabled title="Hazte premium para descargar">Descargar (Premium)</button>
+                }
+
+                <audio id="song-player" data-random="false">
                     <source id="song-src" src="@cancionSeleccionada.ArchivoURL" type="audio/mpeg" />
-                    Tu navegador no soporta audio.
                 </audio>
-
-                <button id="next-btn" class="repro-boton" title="Siguiente">⏭</button>
             </div>
         }
         else
         {
-            <p class="text-muted">No hay canción para reproducir.</p>
+            <p class="text-muted">Selecciona una canción para reproducir.</p>
         }
+    </div>
+
+</div>
+
+<!-- Modal flotante para crear playlist -->
+<div class="modal fade" id="modalCrearPlaylist" tabindex="-1" aria-labelledby="modalCrearPlaylistLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="modalCrearPlaylistLabel">Crear nueva playlist</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/Playlists/Create" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="Nombre" class="form-label">Nombre de la playlist</label>
+                        <input type="text" class="form-control" name="Nombre" required />
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" name="EsPrivada" id="EsPrivada" />
+                        <label class="form-check-label" for="EsPrivada">¿Privada?</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Seleccionar imagen (opcional)</label>
+                        <input type="file" name="Imagen" class="form-control" accept="image/*" />
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success">Crear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
-<style>
-    .reproductor-personalizado {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        margin-top: 20px;
-    }
-
-    .repro-boton {
-        background-color: transparent;
-        border: none;
-        color: #fff;
-        font-size: 22px;
-        padding: 6px 12px;
-        border-radius: 50%;
-        transition: background-color 0.2s;
-    }
-
-        .repro-boton:hover {
-            background-color: #1db954;
-            color: #000;
-        }
-
-    .audio-estilizado {
-        flex-grow: 1;
-        background-color: transparent;
-        border: none;
-        height: 64px;
-        filter: invert(1) brightness(0.8);
-    }
-
-        .audio-estilizado::-webkit-media-controls-panel {
-            background-color: transparent;
-            color: white;
-        }
-</style>
-
 @section Scripts {
-    <script>
-        const rows = Array.from(document.querySelectorAll('.cancion-row'));
-        const audio = document.getElementById('song-player');
-        const source = document.getElementById('song-src');
-        const img = document.getElementById('song-img'); // <- referencia a la imagen
-        let currentIndex = 0;
-
-        function reproducir(index) {
-            if (index < 0 || index >= rows.length) return;
-
-            const row = rows[index];
-            document.getElementById('song-name').innerText = row.dataset.nombre;
-            document.getElementById('song-artist').innerText = row.dataset.artista;
-            document.getElementById('song-genre').innerText = row.dataset.genero;
-            document.getElementById('song-duration').innerText = row.dataset.duracion;
-            source.src = row.dataset.archivo;
-            img.src = row.dataset.imagen; // <- ACTUALIZA LA PORTADA
-            audio.load();
-            audio.play();
-            currentIndex = index;
-        }
-
-        rows.forEach((row, index) => {
-            row.addEventListener('click', () => reproducir(index));
-            if (row.dataset.archivo === source.getAttribute('src')) currentIndex = index;
-        });
-
-        document.getElementById('prev-btn').addEventListener('click', () => {
-            reproducir(currentIndex - 1);
-        });
-
-        document.getElementById('next-btn').addEventListener('click', () => {
-            reproducir(currentIndex + 1);
-        });
-    </script>
-}
-
+    <script src="~/js/reproductor.js"></script>
 }

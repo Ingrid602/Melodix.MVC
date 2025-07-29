@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Melodix.Modelos.Album>
+
+@{
+    ViewData["Title"] = "Mis Álbumes";
+}
+
+<h2 class="text-white">Mis Álbumes</h2>
+
+@if (TempData["Exito"] != null)
+{
+    <div class="alert alert-success">@TempData["Exito"]</div>
+}
+
+<div class="d-flex flex-wrap gap-4 p-4 bg-dark text-white" style="min-height: 100vh;">
+    @foreach (var album in Model)
+    {
+        <div class="card bg-secondary text-white shadow rounded-4" style="width: 200px; height:400px;">
+            <a href="@Url.Action("Details", "Albums", new { id = album.AlbumId })" style="text-decoration: none; color: inherit;">
+                <img src="@album.urlImagen" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;" />
+                <div class="card-body text-center">
+                    <h6 class="fw-bold">@album.Nombre</h6>
+                    <p class="mb-0">@album.FechaLanzamiento.ToShortDateString()</p>
+                </div>
+            </a>
+            <div class="card-footer text-center border-0 bg-transparent mt-auto">
+                <a href="@Url.Action("Edit", "Albums", new { id = album.AlbumId })" class="btn btn-sm btn-outline-light">Editar</a>
+                <a href="@Url.Action("Delete", "Albums", new { id = album.AlbumId })" class="btn btn-sm btn-outline-danger ms-2">Eliminar</a>
+            </div>
+        </div>
+    }
+</div>

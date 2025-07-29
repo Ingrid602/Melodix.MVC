@@ -35,6 +35,9 @@ namespace Melodix.MVC
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+
+
+
             // Configurar servicio de correo
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
             builder.Services.AddTransient<IEmailSender, EmailSender>();
@@ -46,6 +49,7 @@ namespace Melodix.MVC
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
             }
             else
@@ -59,7 +63,7 @@ namespace Melodix.MVC
             app.UseStaticFiles();
 
             app.UseRouting();
-
+        
             app.UseAuthorization();
 
             app.MapControllerRoute(

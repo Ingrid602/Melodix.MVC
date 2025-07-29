@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Melodix.Modelos.Cancion>
+
+@{
+    ViewData["Title"] = "Mis Canciones";
+}
+
+<h2 class="text-white">Mis Canciones</h2>
+
+<div class="row">
+    @foreach (var cancion in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white h-100 shadow">
+                <img src="@cancion.Urlimagen" class="card-img-top" alt="Imagen" style="height:200px; object-fit:cover;" />
+                <div class="card-body">
+                    <h5 class="card-title">@cancion.Nombre</h5>
+                    <p class="card-text">
+                        <strong>Álbum:</strong> @cancion.Album?.Nombre <br />
+                        <strong>Duración:</strong> @cancion.Duracion <br />
+                        <strong>Género:</strong> @cancion.Genero
+                    </p>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Edit" asp-route-id="@cancion.CancionId" class="btn btn-sm btn-outline-warning">
+                            ✏️ Editar
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@cancion.CancionId" class="btn btn-sm btn-outline-danger">
+                            🗑️ Eliminar
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-footer text-center">
+                    <audio controls style="width: 100%;">
+                        <source src="@cancion.ArchivoURL" type="audio/mpeg">
+                        Tu navegador no soporta el reproductor de audio.
+                    </audio>
+                </div>
+            </div>
+        </div>
+    }
+</div>

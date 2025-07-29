@@ -171,7 +171,12 @@ namespace Melodix.Data.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("ArtistaId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Artistas");
                 });
@@ -234,7 +239,7 @@ namespace Melodix.Data.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FacturaId")
+                    b.Property<int?>("FacturaId")
                         .HasColumnType("int");
 
                     b.Property<int>("MetodoPagoId")
@@ -729,6 +734,15 @@ namespace Melodix.Data.Data.Migrations
                     b.Navigation("Artista");
                 });
 
+            modelBuilder.Entity("Melodix.Modelos.Artista", b =>
+                {
+                    b.HasOne("Melodix.Modelos.ApplicationUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("Melodix.Modelos.Cancion", b =>
                 {
                     b.HasOne("Melodix.Modelos.Album", "Album")
@@ -752,9 +766,7 @@ namespace Melodix.Data.Data.Migrations
                 {
                     b.HasOne("Melodix.Modelos.Factura", "Factura")
                         .WithMany("DetallesPago")
-                        .HasForeignKey("FacturaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FacturaId");
 
                     b.HasOne("Melodix.Modelos.MetodoPago", "MetodoPago")
                         .WithMany("DetallesPago")

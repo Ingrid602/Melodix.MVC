@@ -7,7 +7,7 @@ namespace Melodix.Modelos
         [Key]
         public int DetallePagoId { get; set; }
 
-        public int FacturaId { get; set; }
+        public int? FacturaId { get; set; }
         public int MetodoPagoId { get; set; }
 
         public string NombreTitular { get; set; }

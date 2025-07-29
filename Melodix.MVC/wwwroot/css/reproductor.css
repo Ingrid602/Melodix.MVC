@@ -1,0 +1,50 @@
+﻿
+.custom-player {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.controls-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.repro-btn {
+    font-size: 24px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+    .repro-btn:hover {
+        transform: scale(1.2);
+        color: white;
+    }
+
+.time-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#progress-bar {
+    flex-grow: 1;
+    accent-color: #1db954;
+}
+
+.volume-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#volume-bar {
+    flex-grow: 1;
+    accent-color: #1db954;
+    height: 4px;
+    max-width: 200px;
+}

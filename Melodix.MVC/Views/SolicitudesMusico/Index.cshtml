@@ -1,0 +1,67 @@
+﻿@using Melodix.Modelos
+@model List<Melodix.Modelos.SolicitudMusico>
+
+@{
+    ViewData["Title"] = "Solicitudes de Músico";
+    Layout = "LayoutAdmin";
+}
+
+<h2 class="mb-4">📋 Solicitudes de Músico</h2>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No hay solicitudes pendientes por ahora.</p>
+}
+else
+{
+    <table class="table table-bordered table-dark table-hover">
+        <thead class="table-secondary text-dark">
+            <tr>
+                <th>Nombre Artístico</th>
+                <th>Distribuidora</th>
+                <th>Mensaje</th>
+                <th>Usuario</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var solicitud in Model)
+            {
+                <tr>
+                    <td>@solicitud.NombreArtistico</td>
+                    <td>@solicitud.Distribuidora</td>
+                    <td>@solicitud.Mensaje</td>
+                    <td>@solicitud.Usuario?.UserName</td>
+                    <td>@solicitud.FechaSolicitud.ToLocalTime().ToString("g")</td>
+                    <td>
+                        @switch (solicitud.Estado)
+                        {
+                            case EstadoSolicitud.Pendiente:
+                                <span class="badge bg-warning text-dark">Pendiente</span>
+                                break;
+                            case EstadoSolicitud.Aprobada:
+                                <span class="badge bg-success">Aceptada</span>
+                                break;
+                            case EstadoSolicitud.Rechazada:
+                                <span class="badge bg-danger">Rechazada</span>
+                                break;
+                        }
+                    </td>
+                    <td>
+                        @if (solicitud.Estado == EstadoSolicitud.Pendiente)
+                        {
+                            <a asp-action="Aceptar" asp-route-id="@solicitud.Id" class="btn btn-success btn-sm">Aceptar</a>
+                            <a asp-action="Rechazar" asp-route-id="@solicitud.Id" class="btn btn-danger btn-sm">Rechazar</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Sin acciones</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

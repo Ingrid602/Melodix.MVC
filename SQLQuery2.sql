@@ -1,4 +1,2 @@
-﻿SELECT * FROM dbo.Canciones
-
-
-
+﻿INSERT INTO Planes (Nombre, PrecioMensual) 
+VALUES ('Melodix Plus', 4.99);

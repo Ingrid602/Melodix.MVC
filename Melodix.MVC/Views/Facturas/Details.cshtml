@@ -1,0 +1,41 @@
+﻿@model Melodix.Modelos.Factura
+
+@{
+    ViewData["Title"] = "Factura";
+    var plan = Model.Plan;
+    var pago = Model.DetallesPago?.FirstOrDefault();
+}
+
+<div class="container mt-4 text-white">
+    <div class="bg-dark p-4 rounded shadow">
+        <h2 class="mb-3">🎧 ¡Gracias por tu compra, @User.Identity?.Name!</h2>
+
+        <hr class="border-light" />
+
+        <h4>Resumen de Factura</h4>
+        <p><strong>Factura ID:</strong> @Model.FacturaId</p>
+        <p><strong>Fecha:</strong> @Model.Fecha.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Total pagado:</strong> $@Model.Total</p>
+        <p><strong>Estado:</strong> @Model.Estado</p>
+
+        <hr class="border-light" />
+
+        <h4>Detalles del Plan</h4>
+        <p><strong>Plan:</strong> @plan?.Nombre</p>
+        <p><strong>Precio mensual:</strong> $@plan?.PrecioMensual</p>
+
+        <hr class="border-light" />
+
+        <h4>Método de Pago</h4>
+        @if (pago != null)
+        {
+            <p><strong>Titular:</strong> @pago.NombreTitular</p>
+            <p><strong>Tarjeta:</strong> **** **** **** @pago.NumeroTarjeta.Substring(pago.NumeroTarjeta.Length - 4)</p>
+            <p><strong>Vencimiento:</strong> @pago.Vencimiento</p>
+        }
+
+        <div class="mt-4">
+            <a class="btn btn-success" asp-controller="Canciones" asp-action="Index">Ir a Melodix Premium</a>
+        </div>
+    </div>
+</div>

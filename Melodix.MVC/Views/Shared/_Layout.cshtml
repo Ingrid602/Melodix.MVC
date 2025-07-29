@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @using Melodix.Modelos
 <!DOCTYPE html>
 <html lang="en">
@@ -15,132 +16,165 @@
     <link rel="stylesheet" href="~/Melodix.MVC.styles.css" asp-append-version="true" />
     <style>
         body {
-            background: linear-gradient(135deg, #121212, #1e1e1e);
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #121212, #1e1e1e);
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
         }
 
         a {
-            color: #1db954;
-            text-decoration: none;
+        color: #1db954;
+        text-decoration: none;
         }
 
-            a:hover {
-                text-decoration: underline;
-            }
+        a:hover {
+        text-decoration: underline;
+        }
     </style>
+    @RenderSection("Styles", required: false)
 
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Melodix.MVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-black border-bottom shadow mb-3">
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Canciones" asp-action="Index">Canciones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Albums" asp-action="Index">Albumes</a>
-                        </li>
-                    </ul>
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        var user = await UserManager.GetUserAsync(User);
-                        var foto = "/img/usuarios/default-user.png"; // valor por defecto
+                <div class="container-fluid">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Melodix.MVC</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
 
-                        if (user != null)
-                        {
-                            var perfil = Melodix.APIConsumer.Crud<Melodix.Modelos.PerfilUsuario>.GetById(user.Id);
-                            if (perfil != null && !string.IsNullOrEmpty(perfil.FotoUrl))
-                            {
-                                foto = perfil.FotoUrl;
-                            }
-                        }
-
-
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="perfilDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="@foto" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;" alt="Perfil" />
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perfilDropdown">
-                                    <li><a class="dropdown-item" asp-controller="PerfilUsuarios" asp-action="Details" asp-route-id="@user.Id">Ver perfil</a></li>
-                                    <li>
-                                        <form asp-area="Identity"
-                                              asp-page="/Account/Logout"
-                                              asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
-                                              method="post"
-                                              class="dropdown-item p-0 m-0 border-0 bg-transparent">
-                                            <button type="submit" class="btn w-100 text-start">Cerrar sesión</button>
-                                        </form>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        </ul>
-                    }
-                    else
-                    {
-                        <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Iniciar sesión</a>
+                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Registrarse</a>
+                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Canciones" asp-action="Index">Canciones</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Albums" asp-action="Index">Albumes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Artistas" asp-action="Index">Artistas</a>
                             </li>
                         </ul>
-                    }
 
-                    <form asp-action="Index" method="get" class="mb-4">
-                        <div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-content-center flex-grow-1" style="margin-right: 160px;">
+                            <form asp-action="Index" method="get" class="d-flex mx-auto" style="max-width: 500px;">
+                                <div class="d-flex flex-column gap-2">
 
-                            <!-- Fila de input y botones -->
-                            <div class="d-flex flex-wrap align-items-center gap-2">
-                                <input type="text" name="searchString" value="@ViewBag.CurrentFilter" placeholder="Buscar álbum, artista, perfil..." class="form-control w-auto" />
-                                <button type="submit" class="btn btn-success">Buscar</button>
-                                <a asp-action="Index" class="btn btn-outline-secondary">Mostrar todos</a>
-                            </div>
+                                    <!-- Fila de input y botones -->
+                                    <div class="d-flex flex-wrap align-items-center gap-2">
+                                        <input type="text" name="searchString" value="@ViewBag.CurrentFilter" placeholder="Buscar álbum, artista, perfil..." class="form-control w-auto" />
+                                        <button type="submit" class="btn btn-success">Buscar</button>
+                                        <a asp-action="Index" class="btn btn-outline-secondary">Mostrar todos</a>
+                                    </div>
 
-                            <!-- Solo muestra si hay texto -->
-                            @if (!string.IsNullOrWhiteSpace(ViewBag.CurrentFilter as string))
-                            {
-                                <div class="d-flex flex-wrap gap-2 mt-2">
-                                    <a class="btn" asp-controller="Canciones" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
-                                       style="border: 1px solid #ff4da6; color: #ff4da6;">Canciones</a>
+                                    <!-- Solo muestra si hay texto -->
+                                    @if (!string.IsNullOrWhiteSpace(ViewBag.CurrentFilter as string))
+                                    {
+                                        <div class="d-flex flex-wrap gap-2 mt-2">
+                                            <a class="btn" asp-controller="Canciones" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
+                                               style="border: 1px solid #ff4da6; color: #ff4da6;">Canciones</a>
 
-                                    <a class="btn" asp-controller="Albums" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
-                                       style="border: 1px solid #ff4da6; color: #ff4da6;">Álbumes</a>
+                                            <a class="btn" asp-controller="Albums" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
+                                               style="border: 1px solid #ff4da6; color: #ff4da6;">Álbumes</a>
 
-                                    <a class="btn" asp-controller="Artistas" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
-                                       style="border: 1px solid #ff4da6; color: #ff4da6;">Artistas</a>
+                                            <a class="btn" asp-controller="Artistas" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
+                                               style="border: 1px solid #ff4da6; color: #ff4da6;">Artistas</a>
 
-                                    <a class="btn" asp-controller="PerfilUsuarios" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
-                                       style="border: 1px solid #ff4da6; color: #ff4da6;">Perfiles</a>
+                                            <a class="btn" asp-controller="PerfilUsuarios" asp-action="Index" asp-route-searchString="@ViewBag.CurrentFilter"
+                                               style="border: 1px solid #ff4da6; color: #ff4da6;">Perfiles</a>
+                                        </div>
+                                    }
                                 </div>
-                            }
-                        </div>
-                    </form>
+                            </form>
 
+                        </div>
+
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+
+                            var user = await UserManager.GetUserAsync(User);
+                            var foto = "/img/usuarios/default-user.png";
+                            var usuarioDb = _context.Users
+                            .Include(u => u.Suscripciones)
+                            .FirstOrDefault(u => u.Id == user.Id);
+                            var esPremium = usuarioDb?.Suscripciones?.Any(s => s.Activo && s.FechaFin > DateTime.Now) == true;
+                            ViewBag.EsPremium = esPremium;
+
+                            if (user != null)
+                            {
+                                var perfil = Melodix.APIConsumer.Crud<Melodix.Modelos.PerfilUsuario>.GetById(user.Id);
+                                if (perfil != null && !string.IsNullOrEmpty(perfil.FotoUrl))
+                                {
+                                    foto = perfil.FotoUrl;
+                                }
+                            }
+
+
+                            ///BOTON explorar Premium
+                            @if (!esPremium)
+                            {
+                                <li class="nav-item">
+                                    <a asp-controller="Planes" asp-action="Index"
+                                       class="btn btn-light text-dark rounded-pill fw-bold me-3">
+                                       Explorar Premium
+                                    </a>
+                                </li>
+                            }
+
+
+                            <ul class="navbar-nav">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="perfilDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="@foto" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;" alt="Perfil" />
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perfilDropdown">
+                                        <li><a class="dropdown-item" asp-controller="PerfilUsuarios" asp-action="Details" asp-route-id="@user.Id">Ver perfil</a></li>
+                                        <li>
+                                            <form asp-area="Identity"
+                                            asp-page="/Account/Logout"
+                                            asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
+                                            method="post"
+                                            class="dropdown-item p-0 m-0 border-0 bg-transparent">
+                                                <button type="submit" class="btn w-100 text-start">Cerrar sesión</button>
+                                            </form>
+                                        </li>
+
+                                    </ul>
+                                </li>
+                            </ul>
+
+                        }
+                        else
+                        {
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Iniciar sesión</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Registrarse</a>
+                                </li>
+                            </ul>
+                        }
 
                 </div>
             </div>
         </nav>
     </header>
+    }
     <div class="container">
         <main role="main" class="pb-3">
+
+            @if (User.Identity.IsAuthenticated)
+{
             <!-- Barra lateral de playlists -->
             <div class="bg-black text-white p-3" style="width: 230px; position: fixed; top: 0; bottom: 0; left: 0; overflow-y: auto;">
                 <h6 class="text-uppercase">Tus Playlists</h6>
@@ -168,24 +202,39 @@
                             _context.Playlists.Add(nueva);
                             _context.SaveChanges(); // No puede ser await porque es una vista razor
                         }
-
+                       
                         albumesGuardados = _context.Albums
                         .Where(a => a.UsuariosQueLoGuardaron.Any(u => u.Id == usuario.Id))
                         .ToList();
                     }
                 }
-
-                @if (ViewBag.Playlists != null)
+                <!--Mostras playlist del usuario en la biblioteca-->
+                @if (usuario != null)
                 {
-                    foreach (var playlist in ViewBag.Playlists as List<Melodix.Modelos.Playlist>)
+                    var playlists = _context.Playlists
+                    .Where(p => p.UsuarioId == usuario.Id)
+                    .ToList();
+
+                    if (playlists.Any())
                     {
-                         <a href="@Url.Action("Details", "Playlists", new { id = playlist.PlaylistId })" class="d-flex align-items-center gap-2 mb-3 text-white text-decoration-none">
-                            <img src="@playlist.ImagenUrl" style="width: 40px; height: 40px; object-fit: cover;" class="rounded" />
-                            <span>@playlist.Nombre</span>
-                        </a>
+                        foreach (var playlist in playlists)
+                        {
+                            <a href="@Url.Action("Details", "Playlists", new { id = playlist.PlaylistId })" class="d-flex align-items-center gap-2 mb-3 text-white text-decoration-none">
+                                <img src="@playlist.ImagenUrl" style="width: 40px; height: 40px; object-fit: cover;" class="rounded" />
+                                <span>@playlist.Nombre</span>
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted small">No has creado playlists aún.</p>
                     }
                 }
+                    @{
+                        var esMusico = usuario?.Rol == RolUsuario.Musico;
+                    }
 
+                <!--Mostrar albumes guardados en la biblioteca-->
                 <h6 class="text-uppercase mt-4">Tus Álbumes</h6>
                 @if (albumesGuardados != null && albumesGuardados.Any())
                 {
@@ -196,20 +245,56 @@
                             <span>@album.Nombre</span>
                         </a>
                     }
+
+                      
+
+
                 }
                 else
                 {
                     <p class="text-muted small">No has guardado álbumes aún.</p>
                 }
 
+                    <!--Mostrar opciones solo si es músico-->
+                    @if (esMusico)
+                    {
+                        <hr class="bg-secondary" />
+                        <h6 class="text-uppercase mt-4">Opciones de Músico</h6>
+
+                        <a asp-controller="Canciones" asp-action="Create" class="btn btn-outline-light btn-sm w-100 mb-2">
+                            🎵 Subir Canción
+                        </a>
+                        <a asp-controller="Canciones" asp-action="MisCanciones" class="btn btn-outline-light btn-sm w-100 mb-2">
+                            📜 Mis Canciones
+                        </a>
+                        <a asp-controller="Albums" asp-action="Create" class="btn btn-outline-light btn-sm w-100 mb-2">
+                            💿 Crear Álbum
+                        </a>
+                        <a asp-controller="Albums" asp-action="MisAlbumes" class="btn btn-outline-light btn-sm w-100">
+                            📁 Mis Álbumes
+                        </a>
+                    }
+
                 <button class="btn btn-success mt-3 w-100" data-bs-toggle="modal" data-bs-target="#modalCrearPlaylist">
                     + Crear Playlist
                 </button>
             </div>
+            }
+            /
+            <!--Aplicar margen solo si ya esta logueado-->
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div style="margin-left: 230px;">
+                    @RenderBody()
+                </div>
+            }
+            else
+            {
+                <div>
+                    @RenderBody()
+                </div>
+            }
 
-            <div style="margin-left: 230px;">
-                @RenderBody()
-            </div>
         </main>
     </div>
 

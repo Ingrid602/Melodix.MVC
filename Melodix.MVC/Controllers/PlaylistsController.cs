@@ -39,7 +39,7 @@ namespace Melodix.MVC.Controllers
 
         // GET: PlaylistsController/Details/5
 
-        public IActionResult Details(int id)
+        public async Task <IActionResult> Details(int id)
         {
             var playlist = _context.Playlists
                 .Include(p => p.Usuario)
@@ -49,6 +49,20 @@ namespace Melodix.MVC.Controllers
                 .FirstOrDefault(p => p.PlaylistId == id);
 
             if (playlist == null) return NotFound();
+
+            var user = await _userManager.GetUserAsync(User);
+            bool esPremium = false;
+
+            if (user != null)
+            {
+                var usuarioDb = _context.Users
+                    .Include(u => u.Suscripciones)
+                    .FirstOrDefault(u => u.Id == user.Id);
+
+                esPremium = usuarioDb?.Suscripciones?.Any(s => s.Activo && s.FechaFin > DateTime.Now) == true;
+            }
+
+            ViewBag.EsPremium = esPremium;
 
             return View(playlist);
         }

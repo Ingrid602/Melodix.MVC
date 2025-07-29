@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Details";
+
     var yaSigue = ViewBag.YaSigueEstePerfil as bool? ?? false;
     var esMiPerfil = ViewBag.EsMiPerfil as bool? ?? false;
     var usuarioId = User?.FindFirst("sub")?.Value ??
@@ -150,7 +151,20 @@
             @(yaSigue ? "Dejar de seguir" : "Seguir perfil")
         </button>
     </form>
+
+
 }
+
+<!--Boton para enviar la solicitud de convertirse en artista-->
+@if (ViewBag.EsMiPerfil == true && ViewBag.MostrarBotonConvertirse == true)
+{
+    <button class="btn btn-outline-success mt-3" data-bs-toggle="modal" data-bs-target="#modalSolicitudArtista">
+        🎤 Conviértete en artista
+    </button>
+}
+
+
+
 <!--Mostrar playlist en perfil-->
 <hr class="my-5 text-white" />
 
@@ -247,3 +261,91 @@ else
     <p class="text-muted">Este perfil aún no tiene seguidores.</p>
 }
 
+<!-- Modal flotante para crear playlist -->
+<div class="modal fade" id="modalCrearPlaylist" tabindex="-1" aria-labelledby="modalCrearPlaylistLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="modalCrearPlaylistLabel">Crear nueva playlist</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/Playlists/Create" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="Nombre" class="form-label">Nombre de la playlist</label>
+                        <input type="text" class="form-control" name="Nombre" required />
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" name="EsPrivada" id="EsPrivada" />
+                        <label class="form-check-label" for="EsPrivada">¿Privada?</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Seleccionar imagen (opcional)</label>
+                        <input type="file" name="Imagen" class="form-control" accept="image/*" />
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success">Crear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Solicitud para convertirse en artista -->
+<div class="modal fade" id="modalSolicitudArtista" tabindex="-1" aria-labelledby="modalSolicitudArtistaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 shadow" style="background-color: #1e1e1e; color: white;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSolicitudArtistaLabel">Solicitud para convertirse en artista</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <form asp-action="Create" asp-controller="SolicitudesMusico" method="post">
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="NombreArtistico" class="form-label">Nombre artístico</label>
+                        <input type="text" class="form-control" name="NombreArtistico" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Distribuidora" class="form-label">Distribuidora</label>
+                        <input type="text" class="form-control" name="Distribuidora" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Mensaje" class="form-label">Mensaje (opcional)</label>
+                        <textarea class="form-control" name="Mensaje" rows="3"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Enviar solicitud</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Mensaje de solicitud-->
+@if (TempData["Exito"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        @TempData["Exito"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}

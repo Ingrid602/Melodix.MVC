@@ -5,14 +5,6 @@
 }
 
 
-<form asp-action="Index" method="get" class="mb-4">
-    <div class="d-flex flex-wrap align-items-center gap-2">
-        <input type="text" name="searchString" value="@ViewBag.CurrentFilter" placeholder="Buscar álbum o artista..." class="form-control w-auto" />
-        <button type="submit" class="btn btn-success">Buscar</button>
-        <a asp-action="Index" class="btn btn-outline-secondary">Mostrar todos</a>
-    </div>
-</form>
-
 <div class="d-flex flex-wrap gap-4 p-4 bg-dark text-white" style="min-height: 100vh;">
     @foreach (var album in Model)
     {

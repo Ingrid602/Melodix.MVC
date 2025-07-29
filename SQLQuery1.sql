@@ -1,2 +1,1 @@
-﻿DELETE FROM Albums WHERE AlbumId = 2;
-
+﻿select * from DBO.DetallePagos;

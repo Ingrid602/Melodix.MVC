@@ -1,0 +1,44 @@
+﻿@model Melodix.Modelos.Cancion
+@{
+    ViewData["Title"] = "Editar canción";
+    var albumes = ViewBag.Albumes as SelectList;
+}
+
+<h2 class="text-white">✏️ Editar canción</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="CancionId" />
+
+    <div class="form-group">
+        <label asp-for="Nombre" class="text-white"></label>
+        <input asp-for="Nombre" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Genero" class="text-white"></label>
+        <input asp-for="Genero" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Duracion" class="text-white"></label>
+        <input asp-for="Duracion" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AlbumId" class="text-white">Álbum</label>
+        <select asp-for="AlbumId" asp-items="albumes" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label class="text-white">Reemplazar archivo de audio</label>
+        <input type="file" name="archivo" class="form-control-file" />
+    </div>
+
+    <div class="form-group">
+        <label class="text-white">Reemplazar imagen</label>
+        <input type="file" name="imagen" class="form-control-file" />
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Guardar cambios</button>
+    <a asp-action="Create" class="btn btn-secondary mt-3">Cancelar</a>
+</form>

@@ -15,7 +15,13 @@ namespace Melodix.MVC.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Redirect("/Identity/Account/Login");
+
+            }
+
+            return RedirectToAction("Index", "Canciones");
         }
 
         public IActionResult Privacy()

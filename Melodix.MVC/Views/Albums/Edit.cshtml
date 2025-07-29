@@ -1,0 +1,46 @@
+﻿@model Melodix.Modelos.Album
+
+@{
+    ViewData["Title"] = "Editar Álbum";
+}
+
+<div class="container mt-5 text-white bg-dark p-5 rounded shadow">
+    <h2 class="mb-4">Editar Álbum</h2>
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="AlbumId" />
+
+        <div class="mb-3">
+            <label asp-for="Nombre" class="form-label">Nombre del Álbum</label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Imagen actual</label><br />
+            @if (!string.IsNullOrEmpty(Model.urlImagen))
+            {
+                <img src="@Model.urlImagen" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;" />
+            }
+            else
+            {
+                <p class="text-muted">No hay imagen actual.</p>
+            }
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Cambiar imagen (opcional)</label>
+            <input type="file" name="imagen" class="form-control" accept="image/*" />
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a asp-action="MisAlbumes" class="btn btn-outline-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-success">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

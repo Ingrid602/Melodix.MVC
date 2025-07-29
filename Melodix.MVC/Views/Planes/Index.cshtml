@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Melodix.Modelos.Plan>
+
+@{
+    ViewData["Title"] = "Explorar Premium";
+}
+
+<h2 class="text-white mb-4">Elige tu plan Premium</h2>
+
+<div class="row">
+    @foreach (var plan in Model)
+    {
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-lg p-3" style="background-color:#1e1e1e; color:white;">
+                <div class="card-body">
+                    <h5 class="card-title text-white">@plan.Nombre</h5>
+                    <p class="card-text">
+                        <strong>$@plan.PrecioMensual por mes</strong><br />
+                    </p>
+                    <ul>
+                        <li>1 cuenta Premium</li>
+                        <li>Cancela cuando quieras</li>
+                        <li>Descarga tus canciones favoritas</li>
+                    </ul>
+                    <a class="btn btn-success"
+                       asp-controller="DetallePagos"
+                       asp-action="Create"
+                       asp-route-PlanId="@plan.PlanId">
+                        Probar Premium ahora
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

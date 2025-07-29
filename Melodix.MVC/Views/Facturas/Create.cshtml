@@ -1,0 +1,59 @@
+﻿@model Melodix.Modelos.Factura
+
+@{
+    ViewData["Title"] = "Confirmar Pago";
+    var plan = ViewBag.Plan as Melodix.Modelos.Plan;
+}
+
+<h2 class="mb-4 text-white">Confirmar pago - @plan?.Nombre</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            @if (plan != null)
+            {
+                <input type="hidden" name="PlanId" value="@plan.PlanId" />
+            }
+            else
+            {
+                <p class="text-danger">Error: el plan no se cargó correctamente.</p>
+            }
+
+
+            <div class="mb-3">
+                <label class="form-label">Número de tarjeta</label>
+                <input name="NumeroTarjeta" class="form-control" maxlength="16" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Nombre del titular</label>
+                <input name="NombreTitular" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Fecha de vencimiento (MM/AA)</label>
+                <input name="Vencimiento" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Código de seguridad</label>
+                <input name="CodigoSeguridad" class="form-control" maxlength="4" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Resumen</label>
+                <input class="form-control" value="@($"{plan?.Nombre} - ${plan?.PrecioMensual}")" readonly />
+            </div>
+
+            <button type="submit" class="btn btn-success">Confirmar y pagar</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

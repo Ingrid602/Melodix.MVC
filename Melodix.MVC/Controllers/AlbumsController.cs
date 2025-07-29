@@ -85,6 +85,19 @@ namespace Melodix.MVC.Controllers
                 ViewBag.Playlists = playlistsDelUsuario;
             }
 
+            bool esPremium = false;
+
+            if (user != null)
+            {
+                var usuarioDb = _context.Users
+                    .Include(u => u.Suscripciones)
+                    .FirstOrDefault(u => u.Id == user.Id);
+
+                esPremium = usuarioDb?.Suscripciones?.Any(s => s.Activo && s.FechaFin > DateTime.Now) == true;
+            }
+
+            ViewBag.EsPremium = esPremium;
+
             return View(album); //   se envía el modelo a la vista
         }
 
@@ -126,66 +139,165 @@ namespace Melodix.MVC.Controllers
 
 
         // GET: AlbumsController/Create
-        public ActionResult Create()
+        [HttpGet]
+        public async Task <ActionResult> Create()
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || user.Rol != RolUsuario.Musico)
+                return Forbid();
+
+            var artista = _context.Artistas.FirstOrDefault(a => a.UsuarioId == user.Id);
+            if (artista == null) return NotFound();
             return View();
         }
 
         // POST: AlbumsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(Album album, IFormFile imagen)
         {
-            try
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || user.Rol != RolUsuario.Musico)
+                return Forbid();
+
+            var artista = _context.Artistas.FirstOrDefault(a => a.UsuarioId == user.Id);
+            if (artista == null) return NotFound();
+
+            album.ArtistaId = artista.ArtistaId;
+            album.FechaLanzamiento = DateTime.Now;
+
+            if (imagen != null && imagen.Length > 0)
             {
-                return RedirectToAction(nameof(Index));
+                var nombreImagen = Guid.NewGuid() + Path.GetExtension(imagen.FileName);
+                var ruta = Path.Combine("wwwroot", "Portadas", nombreImagen);
+
+                using (var stream = new FileStream(ruta, FileMode.Create))
+                {
+                    await imagen.CopyToAsync(stream);
+                }
+
+                album.urlImagen = "/Portadas/" + nombreImagen;
             }
-            catch
-            {
-                return View();
-            }
+
+            _context.Albums.Add(album);
+            await _context.SaveChangesAsync();
+
+            TempData["Exito"] = "Álbum creado exitosamente.";
+            return RedirectToAction("MisAlbumes");
+
         }
 
         // GET: AlbumsController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var album = await _context.Albums.FindAsync(id);
+            if (album == null) return NotFound();
+
+            var user = await _userManager.GetUserAsync(User);
+            var artista = _context.Artistas.FirstOrDefault(a => a.UsuarioId == user.Id);
+
+            if (artista == null || album.ArtistaId != artista.ArtistaId) return Forbid();
+
+            return View(album);
         }
 
         // POST: AlbumsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, Album album, IFormFile nuevaImagen)
         {
-            try
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || user.Rol != RolUsuario.Musico)
+                return Forbid();
+
+            var artista = _context.Artistas.FirstOrDefault(a => a.UsuarioId == user.Id);
+            if (artista == null) return NotFound();
+
+            var albumDb = _context.Albums.FirstOrDefault(a => a.AlbumId == id && a.ArtistaId == artista.ArtistaId);
+            if (albumDb == null) return Forbid(); // <- Aquí prevenimos editar un álbum que no le pertenece
+
+            albumDb.Nombre = album.Nombre;
+
+            if (nuevaImagen != null && nuevaImagen.Length > 0)
             {
-                return RedirectToAction(nameof(Index));
+                var nombreImagen = Guid.NewGuid() + Path.GetExtension(nuevaImagen.FileName);
+                var ruta = Path.Combine("wwwroot", "Portadas", nombreImagen);
+
+                using (var stream = new FileStream(ruta, FileMode.Create))
+                {
+                    await nuevaImagen.CopyToAsync(stream);
+                }
+
+                albumDb.urlImagen = "/Portadas/" + nombreImagen;
             }
-            catch
-            {
-                return View();
-            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["Exito"] = "Álbum actualizado correctamente.";
+            return RedirectToAction("MisAlbumes");
         }
 
+
         // GET: AlbumsController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || user.Rol != RolUsuario.Musico) return Forbid();
+
+            var artista = _context.Artistas.FirstOrDefault(a => a.UsuarioId == user.Id);
+            if (artista == null) return NotFound();
+
+            var album = _context.Albums
+                .FirstOrDefault(a => a.AlbumId == id && a.ArtistaId == artista.ArtistaId);
+
+            if (album == null) return NotFound();
+
+            return View(album);
         }
 
         // POST: AlbumsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            try
+            var album = await _context.Albums
+                .Include(a => a.Canciones) // Traer canciones relacionadas
+                .FirstOrDefaultAsync(a => a.AlbumId == id);
+
+            if (album == null) return NotFound();
+
+            // Eliminar las canciones relacionadas primero
+            if (album.Canciones != null && album.Canciones.Any())
             {
-                return RedirectToAction(nameof(Index));
+                _context.Canciones.RemoveRange(album.Canciones);
             }
-            catch
-            {
-                return View();
-            }
+
+            _context.Albums.Remove(album);
+            await _context.SaveChangesAsync();
+
+            TempData["Exito"] = "Álbum y canciones eliminados correctamente.";
+            return RedirectToAction("MisAlbumes");
         }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> MisAlbumes()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Index", "Home");
+
+            var artista = await _context.Artistas.FirstOrDefaultAsync(a => a.UsuarioId == user.Id);
+            if (artista == null) return RedirectToAction("Index", "Home");
+
+            var misAlbumes = await _context.Albums
+                .Where(a => a.ArtistaId == artista.ArtistaId)
+                .Include(a => a.Canciones)
+                .ToListAsync();
+
+            return View(misAlbumes);
+        }
+
     }
 }
